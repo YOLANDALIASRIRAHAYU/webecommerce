@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop - SenadaHome</title>
+  <link rel="stylesheet" href="shop-style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body { background: #fafbfc; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #222; }
+    .shop-container { max-width: 1200px; margin: 2rem auto; padding: 1rem; }
+    .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+    .shop-item { background: #fff; border-radius: 1.2rem; box-shadow: 0 2px 15px rgba(0,0,0,0.03); padding: 1.5rem 1.2rem 1.8rem 1.2rem; display: flex; flex-direction: column; align-items: center; transition: box-shadow 0.2s, transform 0.18s; cursor: pointer; position: relative; }
+    .shop-item:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.08); transform: scale(1.02); }
+    .shop-img { width: 120px; height: 120px; border-radius: 0.7rem; object-fit: cover; background: #fafbfc; margin-bottom: 0.7rem; }
+    .shop-title { font-weight: 600; color: #333; font-size: 1.08rem; text-align: center; margin-bottom: 0.3rem; }
+    .shop-desc { color: #666; font-size: 0.97rem; text-align: center; margin-bottom: 0.5rem; }
+    .shop-price { color: #333; font-weight: 700; font-size: 1.08rem; margin-bottom: 0.5rem; }
+    .shop-cart-btn { background: #333; color: #fff; border: none; border-radius: 1.2rem; font-size: 1.1rem; font-weight: 700; padding: 0.5rem 1.2rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: background 0.2s, transform 0.18s; display: flex; align-items: center; gap: 0.5rem; }
+    .shop-cart-btn:hover { background: #555; transform: scale(1.04); }
+    /* Modal */
+    .modal-bg { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.25); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-bg.active { display: flex; }
+    .modal { background: #fff; border-radius: 1.2rem; padding: 2rem 1.5rem; max-width: 400px; width: 95vw; box-shadow: 0 8px 30px rgba(0,0,0,0.08); position: relative; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.3rem; color: #666; cursor: pointer; }
+    .modal-img { width: 100px; height: 100px; border-radius: 0.7rem; object-fit: cover; display: block; margin: 0 auto 1rem; }
+    .modal-title { font-weight: 700; color: #333; font-size: 1.15rem; text-align: center; margin-bottom: 0.5rem; }
+    .modal-desc { color: #666; font-size: 1rem; text-align: center; margin-bottom: 0.7rem; }
+    .modal-price { color: #333; font-weight: 700; font-size: 1.1rem; text-align: center; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="shop-header" style="display:flex;align-items:center;justify-content:space-between;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.05);padding:1.1rem 2.2rem 1.1rem 1.2rem;border-bottom:1px solid #f0f0f0;position:sticky;top:0;z-index:10;">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button onclick="window.location.href='index.html'" aria-label="Kembali" style="background:none;border:none;color:#666;font-size:1.3rem;cursor:pointer;margin-right:0.2rem;"><i class="fa fa-arrow-left"></i></button>
+      <div style="display:flex;align-items:center;gap:0.8rem;">
+        <div style="width:40px;height:40px;background:#20c997;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;"><i class="fa fa-home"></i></div>
+        <div style="display:flex;flex-direction:column;">
+          <div style="font-size:1.4rem;font-weight:800;color:#333;letter-spacing:0.5px;">SenadaHome</div>
+          <div style="font-size:0.85rem;color:#666;font-weight:400;">Furniture & Custom Interior</div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;justify-content:center;max-width:500px;margin:0 2rem;">
+      <div style="position:relative;width:100%;max-width:400px;">
+        <i class="fa fa-search" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#666;font-size:1rem;"></i>
+        <input type="text" placeholder="Cari di SenadaHome" style="width:100%;padding:0.8rem 1rem 0.8rem 3rem;border:none;border-radius:25px;background:#f8f9fa;font-size:1rem;color:#333;outline:none;" />
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:1.5rem;">
+      <button onclick="window.location.href='shoop.html'" style="background:none;border:none;color:#666;font-size:1.3rem;cursor:pointer;position:relative;padding:0.5rem;border-radius:50%;transition:background 0.2s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+        <i class="fa fa-store"></i>
+      </button>
+      <button onclick="window.location.href='checkout.html'" style="background:none;border:none;color:#666;font-size:1.3rem;cursor:pointer;position:relative;padding:0.5rem;border-radius:50%;transition:background 0.2s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'">
+        <i class="fa fa-shopping-cart"></i>
+        <span id="cart-count" style="position:absolute;top:-5px;right:-5px;background:#333;color:#fff;border-radius:1rem;font-size:0.75rem;padding:0.2rem 0.5rem;font-weight:700;min-width:18px;text-align:center;">0</span>
+      </button>
+      <button onclick="window.location.href='login.html'" style="background:#20c997;color:#fff;border:none;border-radius:25px;padding:0.7rem 1.5rem;font-size:0.95rem;font-weight:600;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#1ba085'" onmouseout="this.style.background='#20c997'">
+        Masuk atau Daftar
+      </button>
+    </div>
+  </div>
+  <div class="shop-container">
+    <h1 style="color:#333;text-align:center;margin-bottom:2rem;">Daftar Produk</h1>
+    <div class="shop-grid" id="shop-grid"></div>
+  </div>
+  <!-- Modal Detail Produk -->
+  <div class="modal-bg" id="modal-bg">
+    <div class="modal" id="modal-detail">
+      <button class="modal-close" id="modal-close"><i class="fa fa-times"></i></button>
+      <img src="" class="modal-img" id="modal-img" alt="Gambar Produk" />
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-price" id="modal-price"></div>
+      <button class="shop-cart-btn" id="modal-add-cart"><i class="fa fa-shopping-cart"></i> Tambah ke Keranjang</button>
+    </div>
+  </div>
+  <script>
+    // Dummy data 50 produk
+    const products = Array.from({length: 50}, (_, i) => ({
+      id: i+1,
+      title: `Produk ${i+1}`,
+      desc: `Deskripsi singkat produk ${i+1}. Produk ini sangat berkualitas dan cocok untuk kebutuhan rumah Anda.`,
+      price: `Rp ${(10000 + i*1500).toLocaleString('id-ID')}`,
+      priceNum: 10000 + i*1500,
+      img: `https://picsum.photos/seed/shop${i+1}/200/200`
+    }));
+    // Ambil keranjang dari localStorage
+    function getCart() {
+      return JSON.parse(localStorage.getItem('cart') || '[]');
+    }
+    function setCart(cart) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+    }
+    function updateCartCount() {
+      const cart = getCart();
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+    // Render produk
+    const grid = document.getElementById('shop-grid');
+    products.forEach((p, idx) => {
+      const item = document.createElement('div');
+      item.className = 'shop-item';
+      item.innerHTML = `
+        <img src="${p.img}" class="shop-img" alt="${p.title}" />
+        <div class="shop-title">${p.title}</div>
+        <div class="shop-desc">${p.desc}</div>
+        <div class="shop-price">${p.price}</div>
+        <button class="shop-cart-btn"><i class="fa fa-shopping-cart"></i> Keranjang</button>
+      `;
+      // Tambah ke keranjang dari grid
+      item.querySelector('.shop-cart-btn').onclick = function(e) {
+        e.stopPropagation();
+        addToCart(idx);
+      };
+      item.onclick = () => showDetail(idx);
+      grid.appendChild(item);
+    });
+    // Modal logic
+    const modalBg = document.getElementById('modal-bg');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalPrice = document.getElementById('modal-price');
+    const modalAddCart = document.getElementById('modal-add-cart');
+    let modalIdx = null;
+    function showDetail(idx) {
+      const p = products[idx];
+      modalImg.src = p.img;
+      modalTitle.textContent = p.title;
+      modalDesc.textContent = p.desc;
+      modalPrice.textContent = p.price;
+      modalBg.classList.add('active');
+      modalIdx = idx;
+    }
+    document.getElementById('modal-close').onclick = () => modalBg.classList.remove('active');
+    modalBg.onclick = e => { if(e.target === modalBg) modalBg.classList.remove('active'); };
+    // Tambah ke keranjang dari modal
+    modalAddCart.onclick = function() {
+      if(modalIdx !== null) addToCart(modalIdx);
+      modalBg.classList.remove('active');
+    };
+    // Tambah ke keranjang
+    function addToCart(idx) {
+      const cart = getCart();
+      const prod = products[idx];
+      // Cek jika sudah ada, tambah qty
+      const exist = cart.find(item => item.id === prod.id);
+      if(exist) {
+        exist.qty = (exist.qty || 1) + 1;
+      } else {
+        cart.push({
+          id: prod.id,
+          title: prod.title,
+          price: prod.price,
+          img: prod.img,
+          qty: 1,
+          selected: true
+        });
+      }
+      setCart(cart);
+      alert('Produk ditambahkan ke keranjang!');
+    }
+    // Inisialisasi cart count
+    updateCartCount();
+  </script>
+</body>
+</html> 

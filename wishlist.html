@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SenadaHome - Wishlist</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="header-style.css"/>
+  <link rel="stylesheet" href="shop-style.css"/>
+</head>
+<body>
+  <div class="shop-navbar">
+    <div class="shop-navbar-list">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="#" class="active">Wishlist</a>
+    </div>
+  </div>
+  <div class="shop-container">
+    <div class="shop-title">Wishlist</div>
+    <div class="shop-grid" id="wishlist-grid"></div>
+    <div id="wishlist-empty" style="display:none;text-align:center;color:#888;font-size:1.1rem;margin-top:2rem;">Belum ada produk favorit.</div>
+  </div>
+  <script>
+function renderWishlist() {
+  const grid = document.getElementById('wishlist-grid');
+  const empty = document.getElementById('wishlist-empty');
+  const fav = JSON.parse(localStorage.getItem('favorite') || '[]');
+  if (!fav.length) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  grid.style.display = 'grid';
+  empty.style.display = 'none';
+  grid.innerHTML = fav.map((p, i) => `
+    <div class="shop-card">
+      <img src="${p.img}" alt="${p.title}">
+      <div class="shop-prod-title">${p.title}</div>
+      <div class="shop-prod-price">${p.price}</div>
+      <button class="shop-addcart" title="Tambah ke Keranjang" onclick="addToCartWishlist(${i})"><i class="fas fa-shopping-cart"></i></button>
+      <button class="shop-addcart" title="Hapus dari Favorit" style="top:48px;right:1.1rem;background:#fff;color:#e53e3e;" onclick="removeFromWishlist(${i})"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  `).join('');
+}
+function addToCartWishlist(idx) {
+  const fav = JSON.parse(localStorage.getItem('favorite') || '[]');
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const prod = fav[idx];
+  cart.push({
+    title: prod.title,
+    price: prod.price,
+    img: prod.img,
+    qty: 1
+  });
+  localStorage.setItem('cart', JSON.stringify(cart));
+  showShopToast('Produk berhasil ditambahkan ke keranjang!');
+}
+function removeFromWishlist(idx) {
+  let fav = JSON.parse(localStorage.getItem('favorite') || '[]');
+  fav.splice(idx, 1);
+  localStorage.setItem('favorite', JSON.stringify(fav));
+  renderWishlist();
+  showShopToast('Produk dihapus dari favorit!');
+}
+function showShopToast(msg) {
+  let toast = document.createElement('div');
+  toast.className = 'shop-toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 1800);
+}
+document.addEventListener('DOMContentLoaded', renderWishlist);
+  </script>
+</body>
+</html> 

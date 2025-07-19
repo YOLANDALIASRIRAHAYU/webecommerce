@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pembayaran Berhasil - SenadaHome</title>
+  <link rel="stylesheet" href="home-style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body { background: #faf8f5; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+    .success-container {
+      max-width: 420px;
+      margin: 4rem auto 2rem auto;
+      background: #fff;
+      border-radius: 0.7rem;
+      box-shadow: 0 2px 16px rgba(45,55,72,0.10);
+      padding: 2.5rem 2.2rem 2.5rem 2.2rem;
+      min-height: 320px;
+      text-align: center;
+      animation: fadeInCard 0.7s cubic-bezier(.4,1.4,.6,1) both;
+    }
+    .success-icon {
+      font-size: 3.5rem;
+      color: #38c172;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+    .success-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 0.7rem;
+    }
+    .success-desc {
+      color: #4a5568;
+      font-size: 1.08rem;
+      margin-bottom: 1.5rem;
+    }
+    .success-summary {
+      background: #f7fafc;
+      border-radius: 0.5rem;
+      padding: 1.1rem 1rem 0.7rem 1rem;
+      margin-bottom: 1.7rem;
+      box-shadow: 0 1px 6px rgba(45,55,72,0.06);
+      text-align: left;
+    }
+    .success-btns {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .success-btns a {
+      background: #ff8c00;
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border-radius: 0.3rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(255,140,0,0.10);
+      transition: background 0.2s;
+      margin-bottom: 0.5rem;
+    }
+    .success-btns a:hover {
+      background: #e67e00;
+    }
+    @media (max-width: 600px) {
+      .success-container { max-width: 99vw; padding: 1.2rem 0.5rem 1.5rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <span class="success-icon"><i class="fa fa-check-circle"></i></span>
+    <div class="success-title">Pembayaran Berhasil!</div>
+    <div class="success-desc">Terima kasih, pembayaran Anda telah diterima.<br>Pesanan Anda sedang diproses.</div>
+    <div class="success-orderinfo" id="success-orderinfo" style="text-align:left;margin-bottom:1.2rem;"></div>
+    <div class="success-summary" id="success-summary"></div>
+    <div class="success-btns">
+      <a href="index.html">Kembali ke Beranda</a>
+      <a href="shop.html">Belanja Lagi</a>
+    </div>
+  </div>
+  <script>
+    // Tampilkan ringkasan pesanan dari localStorage
+    const cart = (JSON.parse(localStorage.getItem('cart') || '[]')).filter(item => item.selected);
+    let html = '<b>Ringkasan Pesanan:</b><ul style="margin:0.7rem 0 0 1.2rem;padding:0;">';
+    let total = 0;
+    cart.forEach(item => {
+      if(!item.qty) item.qty = 1;
+      const priceNum = parseInt(item.price.replace(/\D/g, ''));
+      const sub = priceNum * item.qty;
+      total += sub;
+      html += `<li style='margin-bottom:0.4rem;'>${item.title} <span style='color:#4a5568;'>(x${item.qty})</span> <span style='float:right;color:#ff8c00;'>Rp ${sub.toLocaleString('id-ID')}</span></li>`;
+    });
+    html += `</ul><div style='margin-top:0.7rem;font-weight:600;color:#2d3748;'>Total: <span style='color:#ff8c00;'>Rp ${total.toLocaleString('id-ID')}</span></div>`;
+    document.getElementById('success-summary').innerHTML = html;
+    // Tampilkan info pesanan dari localStorage
+    const shipping = JSON.parse(localStorage.getItem('shippingInfo') || '{}');
+    const shippingMethod = localStorage.getItem('shippingMethod') || '';
+    const shippingOptions = [
+      {value:'jnt', logo:'images/jnt-logo.jpg', name:'J&T Express', ongkir:12000, estimasi:'1-2 hari'},
+      {value:'jne', logo:'images/jne-logo.jpg', name:'JNE', ongkir:13000, estimasi:'2-3 hari'},
+      {value:'ninja', logo:'images/ninja-logo.jpg', name:'Ninja Express', ongkir:14000, estimasi:'2-4 hari'},
+      {value:'grab', logo:'images/grab-logo.jpg', name:'Grab', ongkir:18000, estimasi:'1 jam'},
+      {value:'gojek', logo:'images/gojek-logo.jpg', name:'Gojek', ongkir:17000, estimasi:'1 jam'},
+      {value:'lion', logo:'images/lion-logo.jpg', name:'Lion Parcel', ongkir:13500, estimasi:'2-3 hari'}
+    ];
+    const shippingOpt = shippingOptions.find(o=>o.value===shippingMethod);
+    let infoHtml = '<b>Informasi Pesanan:</b><div style="margin:0.7rem 0 0.7rem 0.2rem;">';
+    if(shipping['recipient-name']) infoHtml += `<div><b>Penerima:</b> ${shipping['recipient-name']}</div>`;
+    if(shipping['phone']) infoHtml += `<div><b>Telepon:</b> ${shipping['phone']}</div>`;
+    if(shipping['address']) infoHtml += `<div><b>Alamat:</b> ${shipping['address']}</div>`;
+    if(shipping['city']) infoHtml += `<div><b>Kota:</b> ${shipping['city']}</div>`;
+    if(shipping['province']) infoHtml += `<div><b>Provinsi:</b> ${shipping['province']}</div>`;
+    if(shipping['postal']) infoHtml += `<div><b>Kode Pos:</b> ${shipping['postal']}</div>`;
+    if(shippingOpt) infoHtml += `<div><b>Pengiriman:</b> <img src='${shippingOpt.logo}' alt='${shippingOpt.name}' style='width:22px;height:14px;object-fit:contain;vertical-align:middle;margin-right:0.3rem;'>${shippingOpt.name} <span style='background:#ff8c00;color:#fff;font-size:0.92rem;font-weight:600;padding:0.13rem 0.7rem;border-radius:0px;margin-left:0.7rem;'>Ongkir Rp${shippingOpt.ongkir.toLocaleString('id-ID')}</span> <span style='background:#2d3748;color:#fff;font-size:0.92rem;font-weight:600;padding:0.13rem 0.7rem;border-radius:0px;margin-left:0.3rem;'>${shippingOpt.estimasi}</span></div>`;
+    infoHtml += '</div>';
+    document.getElementById('success-orderinfo').innerHTML = infoHtml;
+    // Kosongkan cart setelah sukses
+    localStorage.setItem('cart', '[]');
+  </script>
+</body>
+</html> 

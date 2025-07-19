@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pembayaran - SenadaHome</title>
+  <link rel="stylesheet" href="home-style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="header-style.css"/>
+  <style>
+    body { background: #faf8f5; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+    .pay-container {
+      max-width: 720px;
+      margin: 2.5rem auto 2rem auto;
+      background: #fff;
+      border-radius: 0px;
+      box-shadow: 0 2px 16px rgba(45,55,72,0.10);
+      padding: 2.5rem 2.2rem 2.5rem 2.2rem;
+      min-height: 520px;
+      position: relative;
+      animation: fadeInCard 0.7s cubic-bezier(.4,1.4,.6,1) both;
+    }
+    @media (max-width: 900px) {
+      .pay-container {
+        max-width: 99vw;
+        padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+      }
+    }
+    .pay-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .pay-section {
+      margin-bottom: 1.7rem;
+    }
+    .pay-summary {
+      background: #f7fafc;
+      border-radius: 0px;
+      padding: 1.1rem 1rem 0.7rem 1rem;
+      margin-bottom: 1.7rem;
+      box-shadow: 0 1px 6px rgba(45,55,72,0.06);
+    }
+    .pay-summary-title {
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 0.7rem;
+      font-size: 1.08rem;
+    }
+    .pay-summary-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0.7rem 0;
+    }
+    .pay-summary-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #ececec;
+      padding-bottom: 0.5rem;
+    }
+    .pay-summary-list li:last-child {
+      border-bottom: none;
+    }
+    .pay-summary-img {
+      width: 44px; height: 44px; border-radius: 0px; object-fit: cover; background: #faf8f5;
+    }
+    .pay-summary-info { flex: 1; }
+    .pay-summary-name { font-weight: 600; color: #2d3748; font-size: 1.01rem; }
+    .pay-summary-qty { color: #4a5568; font-size: 0.97rem; }
+    .pay-summary-price { color: #ff8c00; font-weight: 700; font-size: 1.05rem; }
+    .pay-summary-total {
+      text-align: right;
+      font-size: 1.13rem;
+      font-weight: 700;
+      color: #ff8c00;
+      margin-top: 0.7rem;
+    }
+    .payment-section, .shipping-section {
+      background: #fff;
+      border-radius: 0px;
+      margin: 1.2rem 0 0.7rem 0;
+      box-shadow: 0 1px 6px rgba(45,55,72,0.06);
+      padding: 0.7rem 0.7rem 0.5rem 0.7rem;
+    }
+    .payment-title, .shipping-title {
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 0.9rem;
+      font-size: 1.13rem;
+    }
+    .payment-methods, .shipping-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .payment-card, .shipping-card {
+      display: flex;
+      align-items: center;
+      background: #f7fafc;
+      border-radius: 0px;
+      box-shadow: 0 1px 4px rgba(45,55,72,0.05);
+      padding: 0.7rem 1rem;
+      min-width: 180px;
+      flex: 1 1 180px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+      position: relative;
+      gap: 0.7rem;
+      margin-bottom: 0.5rem;
+    }
+    .checkout-steps {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 0.2rem;
+    }
+    .checkout-step {
+      flex: 1;
+      text-align: center;
+      font-size: 0.98rem;
+      color: #b5b5b5;
+      font-weight: 600;
+      position: relative;
+    }
+    .checkout-step.active {
+      color: #ff8c00;
+    }
+    .checkout-step::after {
+      content: '';
+      display: block;
+      height: 3px;
+      background: #ececec;
+      position: absolute;
+      left: 50%;
+      top: 1.5rem;
+      width: 100%;
+      z-index: 0;
+      transform: translateX(-50%);
+    }
+    .checkout-step:last-child::after {
+      display: none;
+    }
+    .checkout-step.active::after {
+      background: #ff8c00;
+    }
+    .checkout-step-icon {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ececec;
+      color: #b5b5b5;
+      line-height: 28px;
+      font-size: 1.1rem;
+      margin-bottom: 0.2rem;
+      margin-right: 0.3rem;
+      vertical-align: middle;
+    }
+    .checkout-step.active .checkout-step-icon {
+      background: #ff8c00;
+      color: #fff;
+    }
+    .payment-card.active, .payment-card:hover, .shipping-card.active, .shipping-card:hover {
+      border: 2.5px solid #ff8c00;
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(255,140,0,0.13);
+      position: relative;
+    }
+    .payment-card.active::after, .shipping-card.active::after {
+      content: '\2713';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      color: #ff8c00;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background: #fff;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(255,140,0,0.10);
+    }
+    .payment-radio, .shipping-radio {
+      margin-right: 0.7rem;
+      accent-color: #ff8c00;
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+    .payment-icon {
+      font-size: 1.5rem;
+      color: #ff8c00;
+      margin-right: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2rem;
+      height: 2.2rem;
+      background: #fff;
+      border-radius: 0px;
+      box-shadow: 0 1px 4px rgba(45,55,72,0.05);
+    }
+    .payment-icon i {
+      color: #2d3748 !important;
+    }
+    .payment-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.18rem;
+    }
+    .payment-name, .shipping-name {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 1.05rem;
+    }
+    .payment-badge, .shipping-badge {
+      background: #ff8c00;
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 0.13rem 0.7rem;
+      border-radius: 0px;
+      margin: 0.18rem 0.3rem 0.18rem 0;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(255,140,0,0.10);
+    }
+    .shipping-badge.time {
+      background: #2d3748;
+      color: #fff;
+      margin-left: 0;
+    }
+    .shipping-logo {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 0px;
+      box-shadow: 0 1px 4px rgba(45,55,72,0.05);
+      padding: 0.2rem;
+      margin-right: 0.5rem;
+    }
+    .payment-desc {
+      font-size: 0.97rem;
+      color: #4a5568;
+    }
+    .pay-confirm-btn {
+      width: 100%;
+      background: #ff8c00;
+      color: #fff;
+      border: none;
+      border-radius: 0px;
+      font-size: 1.13rem;
+      font-weight: 700;
+      padding: 0.9rem 0;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(255,140,0,0.10);
+      transition: background 0.2s, transform 0.18s;
+      margin-top: 2.2rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+    .pay-confirm-btn:disabled {
+      background: #a0aec0; color: #fff; cursor: not-allowed;
+    }
+    .pay-confirm-btn:hover:not(:disabled) {
+      background: #e67e00; transform: scale(1.03);
+    }
+    .pay-success {
+      text-align: center;
+      color: #2d3748;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-top: 2.5rem;
+      animation: fadeIn 0.5s;
+      background: #f7fafc;
+      border-radius: 0.7rem;
+      padding: 2.2rem 1.2rem 2.2rem 1.2rem;
+      box-shadow: 0 2px 0px rgba(45,55,72,0.08);
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .pay-success .success-icon {
+      font-size: 2.5rem;
+      color: #ff8c00;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .pay-success a.button {
+      display: inline-block;
+      margin-top: 1.2rem;
+      background: #ff8c00;
+      color: #fff;
+      padding: 0.7rem 1.5rem;
+      border-radius: 0px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(255,140,0,0.10);
+      transition: background 0.2s;
+    }
+    .pay-success a.button:hover {
+      background: #e67e00;
+    }
+    @media (max-width: 600px) {
+      .pay-container {
+        max-width: 98vw;
+        padding: 1rem 0.2rem 1.5rem 0.2rem;
+      }
+      .payment-methods, .shipping-methods {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .payment-card, .shipping-card {
+        min-width: 0;
+        width: 100%;
+      }
+    }
+    .payment-card {
+      min-width: 0;
+      flex: none;
+      width: auto;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+    .shipping-card {
+      border: 1px solid #ececec !important;
+    }
+    .shipping-card.active, .shipping-card:hover {
+      border: 1.5px solid #ff8c00 !important;
+    }
+    .shipping-card {
+      min-width: 0;
+      flex: none;
+      width: auto;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+    .shipping-logo {
+      width: 20px;
+      height: 20px;
+      margin-right: 0.4rem;
+      padding: 0.05rem;
+    }
+    .shipping-name {
+      font-size: 0.97rem;
+    }
+    .shipping-badge, .shipping-badge.time {
+      font-size: 0.89rem;
+      padding: 0.09rem 0.5rem;
+      margin: 0.12rem 0.18rem 0.12rem 0;
+    }
+    .shipping-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .shipping-info-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.18rem;
+    }
+    .shipping-info-left {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    /* Pastikan HTML urutan: <div class='shipping-info-left'><img ...><span ...></span></div> */
+    #choose-shipping-btn {
+      background: none !important;
+      color: #2d3748 !important;
+      border: none;
+      padding: 0.7rem 0.5rem 0.7rem 0.5rem;
+      border-radius: 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: none;
+    }
+    #choose-shipping-btn i {
+      font-size: 1.2rem;
+      color: #a0aec0;
+    }
+    /* Tambahan untuk modal popup */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.18);
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #fff;
+      border-radius: 0.9rem;
+      box-shadow: 0 8px 32px rgba(45,55,72,0.18);
+      padding: 2rem 2.2rem;
+      min-width: 260px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeInModal 0.3s;
+    }
+    @keyframes fadeInModal {
+      from { opacity: 0; transform: scale(0.97) translateY(40px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-content button.close-modal {
+      position: absolute;
+      top: 0.7rem;
+      right: 1.2rem;
+      background: none;
+      border: none;
+      font-size: 1.7rem;
+      color: #2d3748;
+      cursor: pointer;
+      z-index: 2;
+      border-radius: 50%;
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s, color 0.18s;
+    }
+    .modal-content button.close-modal:hover {
+      background: #f7fafc;
+      color: #e53e3e;
+    }
+    @media (max-width: 600px) {
+      .modal-content {
+        padding: 1.1rem 0.7rem;
+        min-width: 0;
+        max-width: 99vw;
+      }
+      .modal-content button.close-modal {
+        top: 0.2rem; right: 0.5rem; font-size: 1.3rem; width: 32px; height: 32px;
+      }
+    }
+    .bank-dropdown {
+      background: #fff;
+      border-radius: 0.7rem;
+      box-shadow: 0 8px 32px rgba(45,55,72,0.18);
+      padding: 1.2rem 1.5rem;
+      min-width: 220px;
+      max-width: 320px;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      margin-top: 0.5rem;
+      z-index: 1000;
+      display: none;
+    }
+    .bank-dropdown.active { display: block; }
+    @media (max-width: 600px) {
+      .bank-dropdown { min-width: 140px; padding: 0.7rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="pay-container" id="pay-container">
+    <button onclick="window.location.href='checkout.html'" aria-label="Kembali" style="position:absolute;left:1.2rem;top:1.2rem;background:none;border:none;color:#2d3748;font-size:1.5rem;cursor:pointer;z-index:1001;"><i class="fa fa-arrow-left"></i></button>
+    <div class="pay-title">Pembayaran</div>
+    <div class="pay-section pay-summary" id="pay-summary">
+      <div class="pay-summary-title">Ringkasan Pesanan</div>
+      <ul class="pay-summary-list" id="pay-summary-list"></ul>
+      <div class="pay-summary-voucher" id="pay-summary-voucher"></div>
+      <div class="pay-summary-total" id="pay-summary-total"></div>
+    </div>
+    <form id="shipping-address-form" class="pay-section" style="background:#f7fafc;padding:1.2rem 1.2rem 0.7rem 1.2rem;margin-bottom:1.2rem;border-radius:0.5rem;font-size:1.01rem;color:#4a5568;">
+      <b>Alamat Pengiriman</b><br>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div style="display:flex;flex-direction:column;gap:0.3rem;">
+          <label for="recipient-name">Nama Penerima*</label>
+          <input type="text" id="recipient-name" name="recipient-name" required style="padding:0.5rem;border:1px solid #e2e8f0;border-radius:0.3rem;">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.3rem;">
+          <label for="phone">Nomor Telepon*</label>
+          <input type="tel" id="phone" name="phone" required style="padding:0.5rem;border:1px solid #e2e8f0;border-radius:0.3rem;">
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.3rem;margin-top:1rem;">
+        <label for="address">Alamat Lengkap*</label>
+        <textarea id="address" name="address" required rows="2" style="padding:0.5rem;border:1px solid #e2e8f0;border-radius:0.3rem;"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem;">
+        <div style="display:flex;flex-direction:column;gap:0.3rem;">
+          <label for="city">Kota*</label>
+          <input type="text" id="city" name="city" required style="padding:0.5rem;border:1px solid #e2e8f0;border-radius:0.3rem;">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.3rem;">
+          <label for="province">Provinsi*</label>
+          <input type="text" id="province" name="province" required style="padding:0.5rem;border:1px solid #e2e8f0;border-radius:0.3rem;">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.3rem;">
+          <label for="postal">Kode Pos*</label>
+          <input type="text" id="postal" name="postal" required style="padding:0.5rem;border:1px solid #e2e8f0;border-radius:0.3rem;">
+        </div>
+      </div>
+    </form>
+    <!-- Shipping Section dengan tombol pop up -->
+    <div class="pay-section shipping-section" id="shipping-section">
+      <div class="shipping-title">Opsi Pengiriman</div>
+      <button id="choose-shipping-btn">Pilih Metode Pengiriman <i class="fa fa-chevron-right"></i></button>
+      <div id="selected-shipping-info" style="margin-top:1.1rem;"></div>
+    </div>
+    <!-- Modal Pop Up Opsi Pengiriman -->
+    <div id="shipping-modal" class="modal-overlay">
+      <div id="shipping-modal-content" class="modal-content">
+        <button id="shipping-modal-close" class="close-modal">&times;</button>
+        <div style="font-size:1.1rem;color:#2d3748;font-weight:700;margin-bottom:1.2rem;">Pilih Metode Pengiriman</div>
+        <form id="shipping-modal-form">
+          <div id="shipping-modal-options" style="display:flex;flex-direction:column;gap:1rem;"></div>
+          <button type="submit" style="margin-top:1.5rem;background:#ff8c00;color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:0.3rem;font-size:1.05rem;font-weight:600;cursor:pointer;">Pilih</button>
+        </form>
+      </div>
+    </div>
+    <!-- Tambahkan dropdown shipping di bawah tombol -->
+    <!-- Modal Pop Up untuk Pilih Bank Tujuan -->
+    <!-- HAPUS MODAL BANK TENGAH LAYAR DAN SCRIPTNYA -->
+    <!--
+    <div id="bank-modal" class="modal-overlay">
+      <div id="bank-modal-content" class="modal-content">
+        <button id="bank-modal-close" class="close-modal">&times;</button>
+        <div id="bank-modal-body"></div>
+      </div>
+    </div>
+    -->
+    <!-- Modal Pop Up Pembayaran -->
+    <div id="payment-modal" class="modal-overlay">
+      <div id="payment-modal-content" class="modal-content">
+        <button id="payment-modal-close" class="close-modal">&times;</button>
+        <div id="payment-modal-body"></div>
+      </div>
+    </div>
+    <div class="pay-section payment-section" id="payment-section">
+      <div class="payment-title">Pilih Metode Pembayaran</div>
+      <div class="payment-methods">
+        <label class="payment-card" style="position:relative;">
+          <input type="radio" name="payment-method" value="bank" class="payment-radio" id="radio-bank" />
+          <span class="payment-icon"><i class="fa fa-university"></i></span>
+          <span class="payment-info">
+            <span class="payment-name">Transfer Bank</span>
+            <span class="payment-badge">Gratis Admin</span>
+            <span class="payment-desc">
+              <img src="images/bca-logo.jpg" alt="BCA" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+              <img src="images/bni-logo.jpg" alt="BNI" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+              <img src="images/bri-logo.jpg" alt="BRI" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+              <img src="images/mandiri-logo.jpg" alt="Mandiri" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> dan lainnya
+            </span>
+          </span>
+          <div id="bank-dropdown" class="bank-dropdown"></div>
+        </label>
+        <!-- Hapus detail bank di bawah radio button -->
+        <!-- <div class="payment-detail" id="detail-bank" style="display:none;margin-left:2.5rem;margin-bottom:0.7rem;">
+          <div style="margin-bottom:0.7rem;font-weight:600;color:#2d3748;">Pilih Bank Tujuan:</div>
+          <div id="bank-options" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.7rem;">
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+              <input type="radio" name="bank-option" value="bca" checked />
+              <img src="images/bca-logo.jpg" alt="BCA" style="width:28px;height:18px;object-fit:contain;"> BCA
+            </label>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+              <input type="radio" name="bank-option" value="bni" />
+              <img src="images/bni-logo.jpg" alt="BNI" style="width:28px;height:18px;object-fit:contain;"> BNI
+            </label>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+              <input type="radio" name="bank-option" value="bri" />
+              <img src="images/bri-logo.jpg" alt="BRI" style="width:28px;height:18px;object-fit:contain;"> BRI
+            </label>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+              <input type="radio" name="bank-option" value="mandiri" />
+              <img src="images/mandiri-logo.jpg" alt="Mandiri" style="width:28px;height:18px;object-fit:contain;"> Mandiri
+            </label>
+          </div>
+          <div id="bank-detail-info" style="display:flex;align-items:center;gap:0.5rem;font-size:1.01rem;color:#4a5568;font-weight:500;">
+            <img src="images/bca-logo.jpg" alt="BCA" style="width:32px;height:20px;object-fit:contain;">
+            <span>BCA: <b>1234567890</b></span>
+          </div>
+        </div> -->
+        <!-- E-Wallet -->
+        <label class="payment-card" style="position:relative;">
+          <input type="radio" name="payment-method" value="ewallet" class="payment-radio" id="radio-ewallet" />
+          <span class="payment-icon"><i class="fa fa-wallet"></i></span>
+          <span class="payment-info">
+            <span class="payment-name">E-Wallet</span>
+            <span class="payment-badge">Cashback 5%</span>
+            <span class="payment-desc">
+              <img src="images/ovo-logo.jpg" alt="OVO" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+              <img src="images/dana-logo.jpg" alt="DANA" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+              <img src="images/gopay-logo.jpg" alt="GoPay" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+              <img src="images/shopeepay-logo.jpg" alt="ShopeePay" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+            </span>
+          </span>
+          <div id="ewallet-dropdown" class="bank-dropdown"></div>
+        </label>
+        <!-- Kartu Kredit -->
+        <label class="payment-card" style="position:relative;">
+          <input type="radio" name="payment-method" value="credit" class="payment-radio" id="radio-credit" />
+          <span class="payment-icon"><i class="fa fa-credit-card"></i></span>
+          <span class="payment-info">
+            <span class="payment-name">Kartu Kredit</span>
+            <span class="payment-badge">Cicilan 0%</span>
+            <span class="payment-desc">
+              <img src="images/visa-logo.jpg" alt="Visa" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+              <img src="images/mastercard-logo.jpg" alt="MasterCard" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+              <img src="images/jcb-logo.png" alt="JCB" style="width:22px;height:14px;object-fit:contain;vertical-align:middle;"> 
+            </span>
+          </span>
+          <div id="credit-dropdown" class="bank-dropdown"></div>
+        </label>
+        <label class="payment-card">
+          <input type="radio" name="payment-method" value="cod" class="payment-radio" />
+          <span class="payment-icon"><i class="fa fa-box"></i></span>
+          <span class="payment-info">
+            <span class="payment-name">COD (Bayar di Tempat)</span>
+            <span class="payment-badge">Gratis Ongkir</span>
+            <span class="payment-desc">Bayar saat barang sampai</span>
+          </span>
+        </label>
+        <div class="payment-detail" id="detail-cod" style="display:none;margin-left:2.5rem;margin-bottom:0.7rem;">
+          <div style="color:#4a5568;font-size:0.98rem;">Pembayaran dilakukan langsung ke kurir saat barang diterima.</div>
+        </div>
+      </div>
+    </div>
+    <button class="pay-confirm-btn" id="pay-confirm">Konfirmasi Pembayaran</button>
+    <!-- Modal Pop Up -->
+  </div>
+  <script>
+    // Ongkir untuk setiap metode
+    const shippingPrices = {
+      jnt: 12000,
+      jne: 13000,
+      ninja: 14000,
+      grab: 18000,
+      gojek: 17000,
+      lion: 13500
+    };
+    // Render ringkasan pesanan
+    const cart = (JSON.parse(localStorage.getItem('cart') || '[]')).filter(item => item.selected);
+    const summaryList = document.getElementById('pay-summary-list');
+    const summaryTotal = document.getElementById('pay-summary-total');
+    const summaryVoucher = document.getElementById('pay-summary-voucher');
+    let total = 0;
+    summaryList.innerHTML = '';
+    cart.forEach(item => {
+      if(!item.qty) item.qty = 1;
+      const priceNum = parseInt(item.price.replace(/\D/g, ''));
+      const sub = priceNum * item.qty;
+      total += sub;
+      summaryList.innerHTML += `<li><img src="${item.img}" class="pay-summary-img" alt="${item.title}" /><div class="pay-summary-info"><div class="pay-summary-name">${item.title}</div><div class="pay-summary-qty">Qty: ${item.qty}</div></div><div class="pay-summary-price" style="color:#2d3748;">Rp ${sub.toLocaleString('id-ID')}</div></li>`;
+    });
+    // Integrasi voucher
+    let voucherPotongan = 0, voucherOngkir = 0, voucherCashback = 0;
+    let voucherText = '';
+    const claimed = JSON.parse(localStorage.getItem('claimedVouchers') || '[]');
+    if(claimed.includes('ongkir1') || claimed.includes('ongkir2')) {
+      voucherOngkir = 20000;
+      voucherText += `<div>Voucher Ongkir: -Rp 20.000</div>`;
+    }
+    if(claimed.includes('cashback1') && total >= 200000) {
+      voucherCashback = Math.min(Math.round(total*0.04), 20000);
+      voucherText += `<div>Voucher Cashback: +Rp ${voucherCashback.toLocaleString('id-ID')}</div>`;
+    }
+    if(claimed.includes('diskon2') && total >= 150000) {
+      voucherPotongan = Math.min(Math.round(total*0.10), 30000);
+      voucherText += `<div>Voucher Diskon 10%: -Rp ${voucherPotongan.toLocaleString('id-ID')}</div>`;
+    } else if(claimed.includes('diskon1') && total >= 120000) {
+      voucherPotongan = Math.min(Math.round(total*0.08), 10000);
+      voucherText += `<div>Voucher Diskon 8%: -Rp ${voucherPotongan.toLocaleString('id-ID')}</div>`;
+    }
+    summaryVoucher.innerHTML = voucherText ? `<div style='color:#ff8c00;font-size:1.01rem;font-weight:600;margin-bottom:0.3rem;'>Voucher Aktif:</div>${voucherText}` : '';
+
+    // --- FUNGSI UPDATE TOTAL ---
+    function updateTotal() {
+      let ongkir = shippingPrices[selectedShipping] || 0;
+      let totalSetelahVoucher = total - voucherOngkir - voucherPotongan + ongkir;
+    if(totalSetelahVoucher < 0) totalSetelahVoucher = 0;
+      summaryTotal.innerHTML = `<div style='font-size:0.98rem;color:#2d3748;font-weight:500;'><span style='color:#ff8c00;'>Ongkir:</span> <span style='color:#2d3748;'>Rp ${ongkir.toLocaleString('id-ID')}</span></div><div style='margin-top:0.2rem;font-size:1.13rem;font-weight:700;color:#2d3748;'>Total: Rp ${totalSetelahVoucher.toLocaleString('id-ID')}</div>`;
+    }
+    // --- END FUNGSI ---
+
+    // Payment method logic
+    const paymentSection = document.getElementById('payment-section');
+    const radios = paymentSection.querySelectorAll('.payment-radio');
+    let selectedPayment = localStorage.getItem('paymentMethod') || 'bank';
+    radios.forEach(radio => {
+      if(radio.value === selectedPayment) radio.checked = true;
+      radio.addEventListener('change', function() {
+        selectedPayment = this.value;
+        localStorage.setItem('paymentMethod', selectedPayment);
+        highlightPaymentCard();
+        showPaymentDetail(); // Show detail when payment method changes
+      });
+    });
+    function highlightPaymentCard() {
+      paymentSection.querySelectorAll('.payment-card').forEach(card => {
+        card.classList.remove('active');
+        if(card.querySelector('.payment-radio').checked) card.classList.add('active');
+      });
+    }
+    highlightPaymentCard();
+
+    // Shipping method logic
+    const shippingSection = document.getElementById('shipping-section');
+    const shippingRadios = shippingSection.querySelectorAll('.shipping-radio');
+    let selectedShipping = localStorage.getItem('shippingMethod') || 'jnt';
+    shippingRadios.forEach(radio => {
+      if(radio.value === selectedShipping) radio.checked = true;
+      radio.addEventListener('change', function() {
+        selectedShipping = this.value;
+        localStorage.setItem('shippingMethod', selectedShipping);
+        highlightShippingCard();
+        updateTotal(); // update total saat ganti ongkir
+      });
+    });
+    function highlightShippingCard() {
+      shippingSection.querySelectorAll('.shipping-card').forEach(card => {
+        card.classList.remove('active');
+        if(card.querySelector('.shipping-radio').checked) card.classList.add('active');
+      });
+    }
+    highlightShippingCard();
+    updateTotal(); // inisialisasi total dengan ongkir
+
+    // Tampilkan detail metode pembayaran sesuai pilihan
+    function showPaymentDetail() {
+      const val = document.querySelector('input[name="payment-method"]:checked')?.value;
+      ["bank","ewallet","credit","cod"].forEach(function(v){
+        document.getElementById('detail-'+v).style.display = (v===val)?'block':'none';
+      });
+    }
+    // Tampilkan modal otomatis saat memilih metode pembayaran utama
+    function showPaymentDetailAndModal() {}
+    document.querySelectorAll('input[name="payment-method"]').forEach(function(radio){
+      radio.removeEventListener('change', showPaymentDetailAndModal);
+      radio.addEventListener('change', showPaymentDetail);
+    });
+    window.addEventListener('DOMContentLoaded', showPaymentDetail);
+
+    // Bank detail logic
+    const bankData = {
+      bca: {logo: 'images/bca-logo.jpg', name: 'BCA', norek: '1234567890'},
+      bni: {logo: 'images/bni-logo.jpg', name: 'BNI', norek: '9876543210'},
+      bri: {logo: 'images/bri-logo.jpg', name: 'BRI', norek: '1122334455'},
+      mandiri: {logo: 'images/mandiri-logo.jpg', name: 'Mandiri', norek: '5566778899'}
+    };
+    // E-Wallet detail logic
+    function updateEwalletDetail() {
+      const val = document.querySelector('input[name="ewallet-option"]:checked')?.value || 'ovo';
+      const data = ewalletData[val];
+      document.getElementById('ewallet-detail-info').innerHTML = `<img src="${data.logo}" alt="${data.name}" style="width:32px;height:20px;object-fit:contain;"> <span>OVO: <b>${data.id}</b></span>`;
+    }
+    document.querySelectorAll('input[name="ewallet-option"]').forEach(function(radio){
+      radio.addEventListener('change', updateEwalletDetail);
+    });
+    window.addEventListener('DOMContentLoaded', updateEwalletDetail);
+
+    // Credit detail logic
+    function updateCreditDetail() {
+      const val = document.querySelector('input[name="credit-option"]:checked')?.value || 'visa';
+      const data = creditData[val];
+      document.getElementById('credit-detail-info').innerHTML = `<img src="${data.logo}" alt="${data.name}" style="width:32px;height:20px;object-fit:contain;"> <span>Nomor Kartu: <b>${data.info}</b></span>`;
+    }
+    document.querySelectorAll('input[name="credit-option"]').forEach(function(radio){
+      radio.addEventListener('change', updateCreditDetail);
+    });
+    window.addEventListener('DOMContentLoaded', updateCreditDetail);
+
+    // Modal logic
+    function showPaymentModal(html) {
+      document.getElementById('payment-modal-body').innerHTML = html;
+      document.getElementById('payment-modal').style.display = 'flex';
+    }
+    document.getElementById('payment-modal-close').onclick = function() {
+      document.getElementById('payment-modal').style.display = 'none';
+    };
+    document.getElementById('payment-modal').onclick = function(e) {
+      if(e.target === this) this.style.display = 'none';
+    };
+    // Bank modal
+    function updateBankDetailModal() {
+      const val = document.querySelector('input[name="bank-option"]:checked')?.value || 'bca';
+      const data = bankData[val];
+      showPaymentModal(`<img src="${data.logo}" alt="${data.name}" style="width:48px;height:30px;object-fit:contain;margin-bottom:1rem;"><div style='font-size:1.1rem;color:#2d3748;font-weight:700;margin-bottom:0.5rem;'>${data.name}</div><div style='font-size:1.05rem;color:#4a5568;'>Nomor Rekening:</div><div style='font-size:1.25rem;font-weight:700;color:#ff8c00;margin-bottom:0.7rem;'>${data.norek}</div>`);
+    }
+    document.querySelectorAll('input[name="bank-option"]').forEach(function(radio){
+      radio.addEventListener('change', updateBankDetailModal);
+    });
+    // Ewallet modal
+    function updateEwalletDetailModal() {
+      const val = document.querySelector('input[name="ewallet-option"]:checked')?.value || 'ovo';
+      const data = ewalletData[val];
+      showPaymentModal(`<img src="${data.logo}" alt="${data.name}" style="width:48px;height:30px;object-fit:contain;margin-bottom:1rem;"><div style='font-size:1.1rem;color:#2d3748;font-weight:700;margin-bottom:0.5rem;'>${data.name}</div><div style='font-size:1.05rem;color:#4a5568;'>Nomor/ID:</div><div style='font-size:1.25rem;font-weight:700;color:#ff8c00;margin-bottom:0.7rem;'>${data.id}</div>`);
+    }
+    document.querySelectorAll('input[name="ewallet-option"]').forEach(function(radio){
+      radio.addEventListener('change', updateEwalletDetailModal);
+    });
+    // Credit modal
+    function updateCreditDetailModal() {
+      const val = document.querySelector('input[name="credit-option"]:checked')?.value || 'visa';
+      const data = creditData[val];
+      showPaymentModal(`<img src="${data.logo}" alt="${data.name}" style="width:48px;height:30px;object-fit:contain;margin-bottom:1rem;"><div style='font-size:1.1rem;color:#2d3748;font-weight:700;margin-bottom:0.5rem;'>${data.name}</div><div style='font-size:1.05rem;color:#4a5568;'>Nomor Kartu:</div><div style='font-size:1.25rem;font-weight:700;color:#ff8c00;margin-bottom:0.7rem;'>${data.info}</b></div>`);
+    }
+    document.querySelectorAll('input[name="credit-option"]').forEach(function(radio){
+      radio.addEventListener('change', updateCreditDetailModal);
+    });
+
+    // Konfirmasi pembayaran
+    document.getElementById('pay-confirm').onclick = function(e) {
+      e.preventDefault();
+      // Validasi alamat pengiriman
+      const form = document.getElementById('shipping-address-form');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      // Simpan data form ke localStorage
+      const shippingData = {};
+      ['recipient-name','phone','address','city','province','postal'].forEach(id => {
+        shippingData[id] = form.querySelector(`[name="${id}"]`).value;
+      });
+      localStorage.setItem('shippingInfo', JSON.stringify(shippingData));
+      // Redirect ke halaman sukses
+      window.location.href = 'success.html';
+    };
+
+    // Tampilkan modal detail saat tombol diklik
+    if(document.getElementById('show-bank-modal')){
+      document.getElementById('show-bank-modal').onclick = updateBankDetailModal;
+    }
+    if(document.getElementById('show-ewallet-modal')){
+      document.getElementById('show-ewallet-modal').onclick = updateEwalletDetailModal;
+    }
+    if(document.getElementById('show-credit-modal')){
+      document.getElementById('show-credit-modal').onclick = updateCreditDetailModal;
+    }
+
+    // Data shipping
+    const shippingOptions = [
+      {value:'jnt', logo:'images/jnt-logo.jpg', name:'J&T Express', ongkir:12000, estimasi:'1-2 hari'},
+      {value:'jne', logo:'images/jne-logo.jpg', name:'JNE', ongkir:13000, estimasi:'2-3 hari'},
+      {value:'ninja', logo:'images/ninja-logo.jpg', name:'Ninja Express', ongkir:14000, estimasi:'2-4 hari'},
+      {value:'grab', logo:'images/grab-logo.jpg', name:'Grab', ongkir:18000, estimasi:'1 jam'},
+      {value:'gojek', logo:'images/gojek-logo.jpg', name:'Gojek', ongkir:17000, estimasi:'1 jam'},
+      {value:'lion', logo:'images/lion-logo.jpg', name:'Lion Parcel', ongkir:13500, estimasi:'2-3 hari'}
+    ];
+    const chooseShippingBtn = document.getElementById('choose-shipping-btn');
+    const shippingModal = document.getElementById('shipping-modal');
+    const shippingModalOptions = document.getElementById('shipping-modal-options');
+    const shippingModalForm = document.getElementById('shipping-modal-form');
+    const selectedShippingInfo = document.getElementById('selected-shipping-info');
+    function renderShippingOptions() {
+      shippingModalOptions.innerHTML = shippingOptions.map(opt => `
+        <label style='display:flex;align-items:center;justify-content:space-between;gap:1.2rem;background:#f7fafc;padding:0.7rem 1rem;border-radius:0.3rem;box-shadow:0 1px 4px rgba(45,55,72,0.05);border:1.5px solid ${selectedShipping===opt.value?'#ff8c00':'#ececec'};cursor:pointer;'>
+          <span style='display:flex;align-items:center;gap:0.7rem;'>
+            <input type='radio' name='modal-shipping-option' value='${opt.value}' ${selectedShipping===opt.value?'checked':''} style='accent-color:#ff8c00;width:1.1rem;height:1.1rem;margin-right:0.5rem;'>
+            <img src='${opt.logo}' alt='${opt.name}' style='width:28px;height:20px;object-fit:contain;'>
+            <span style='font-weight:600;color:#2d3748;font-size:1.05rem;'>${opt.name}</span>
+          </span>
+          <span style='display:flex;flex-direction:column;align-items:flex-end;gap:0.18rem;'>
+            <span style='background:#ff8c00;color:#fff;font-size:0.92rem;font-weight:600;padding:0.13rem 0.7rem;border-radius:0px;margin-bottom:0.1rem;'>Ongkir Rp${opt.ongkir.toLocaleString('id-ID')}</span>
+            <span style='background:#2d3748;color:#fff;font-size:0.92rem;font-weight:600;padding:0.13rem 0.7rem;border-radius:0px;'>Estimasi ${opt.estimasi}</span>
+          </span>
+        </label>
+      `).join('');
+    }
+    chooseShippingBtn.onclick = function() {
+      renderShippingOptions();
+      shippingModal.style.display = 'flex';
+    };
+    document.getElementById('shipping-modal-close').onclick = function() {
+      shippingModal.style.display = 'none';
+    };
+    shippingModal.onclick = function(e) {
+      if(e.target === this) this.style.display = 'none';
+    };
+    shippingModalForm.onsubmit = function(e) {
+      e.preventDefault();
+      const val = document.querySelector('input[name="modal-shipping-option"]:checked')?.value || 'jnt';
+      selectedShipping = val;
+      localStorage.setItem('shippingMethod', selectedShipping);
+      showSelectedShipping();
+      shippingModal.style.display = 'none';
+      updateTotal && updateTotal();
+    };
+    function showSelectedShipping() {
+      const opt = shippingOptions.find(o=>o.value===selectedShipping);
+      if(!opt) { selectedShippingInfo.innerHTML = ''; return; }
+      selectedShippingInfo.innerHTML = `<div style='display:flex;align-items:center;gap:0.7rem;background:#f7fafc;padding:0.7rem 1rem;border-radius:0.3rem;box-shadow:0 1px 4px rgba(45,55,72,0.05);margin-bottom:0.5rem;'><img src='${opt.logo}' alt='${opt.name}' style='width:28px;height:20px;object-fit:contain;'><span style='font-weight:600;color:#2d3748;font-size:1.05rem;'>${opt.name}</span><span style='background:#ff8c00;color:#fff;font-size:0.92rem;font-weight:600;padding:0.13rem 0.7rem;border-radius:0px;margin-left:0.7rem;'>Ongkir Rp${opt.ongkir.toLocaleString('id-ID')}</span><span style='background:#2d3748;color:#fff;font-size:0.92rem;font-weight:600;padding:0.13rem 0.7rem;border-radius:0px;margin-left:0.3rem;'>${opt.estimasi}</span></div>`;
+    }
+    showSelectedShipping();
+
+    // Data global
+    const ewalletData = {
+      ovo: {logo: 'images/ovo-logo.jpg', name: 'OVO', id: '0812-3456-7890'},
+      dana: {logo: 'images/dana-logo.jpg', name: 'DANA', id: '0812-9876-5432'},
+      gopay: {logo: 'images/gopay-logo.jpg', name: 'GoPay', id: '0812-1122-3344'},
+      shopeepay: {logo: 'images/shopeepay-logo.jpg', name: 'ShopeePay', id: '0812-5566-7788'}
+    };
+    const creditData = {
+      visa: {logo: 'images/visa-logo.jpg', name: 'Visa', info: '4111 1111 1111 1111'},
+      mastercard: {logo: 'images/mastercard-logo.jpg', name: 'MasterCard', info: '5555 5555 5555 4444'},
+      jcb: {logo: 'images/jcb-logo.png', name: 'JCB', info: '3530 1113 3330 0000'}
+    };
+    // E-Wallet Dropdown
+    const radioEwallet = document.getElementById('radio-ewallet');
+    const ewalletDropdown = document.getElementById('ewallet-dropdown');
+    function showEwalletDropdown() {
+      let html = `<div style='font-size:1.1rem;color:#2d3748;font-weight:700;margin-bottom:0.7rem;'>Pilih E-Wallet</div>`;
+      html += `<form id='dropdown-ewallet-form'><div style='display:flex;flex-direction:column;gap:0.7rem;'>`;
+      Object.entries(ewalletData).forEach(([key, data], i) => {
+        html += `<label style='display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:1.05rem;'><input type='radio' name='dropdown-ewallet-option' value='${key}' ${i===0?'checked':''} /> <img src='${data.logo}' alt='${data.name}' style='width:28px;height:18px;object-fit:contain;'> ${data.name}</label>`;
+      });
+      html += `</div>`;
+      html += `<div id='dropdown-ewallet-detail' style='margin-top:0.7rem;font-size:1.08rem;color:#4a5568;font-weight:500;'></div>`;
+      html += `<button type='submit' style='margin-top:1.2rem;background:#ff8c00;color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:0.3rem;font-size:1.01rem;font-weight:600;cursor:pointer;'>Pilih</button></form>`;
+      ewalletDropdown.innerHTML = html;
+      ewalletDropdown.classList.add('active');
+      updateDropdownEwalletDetail();
+      ewalletDropdown.querySelectorAll('input[name="dropdown-ewallet-option"]').forEach(function(radio){
+        radio.addEventListener('change', updateDropdownEwalletDetail);
+      });
+      ewalletDropdown.querySelector('#dropdown-ewallet-form').onsubmit = function(e) {
+        e.preventDefault();
+        ewalletDropdown.classList.remove('active');
+      };
+    }
+    function updateDropdownEwalletDetail() {
+      const val = ewalletDropdown.querySelector('input[name="dropdown-ewallet-option"]:checked')?.value || 'ovo';
+      const data = ewalletData[val];
+      ewalletDropdown.querySelector('#dropdown-ewallet-detail').innerHTML = `<div style='display:flex;align-items:center;gap:0.7rem;'><img src='${data.logo}' alt='${data.name}' style='width:32px;height:20px;object-fit:contain;'><span>${data.name}: <b style='color:#ff8c00;font-size:1.15rem;'>${data.id}</b></span></div>`;
+    }
+    radioEwallet.addEventListener('click', function() {
+      showEwalletDropdown();
+    });
+    // Kartu Kredit Dropdown
+    const radioCredit = document.getElementById('radio-credit');
+    const creditDropdown = document.getElementById('credit-dropdown');
+    function showCreditDropdown() {
+      let html = `<div style='font-size:1.1rem;color:#2d3748;font-weight:700;margin-bottom:0.7rem;'>Pilih Kartu</div>`;
+      html += `<form id='dropdown-credit-form'><div style='display:flex;flex-direction:column;gap:0.7rem;'>`;
+      Object.entries(creditData).forEach(([key, data], i) => {
+        html += `<label style='display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:1.05rem;'><input type='radio' name='dropdown-credit-option' value='${key}' ${i===0?'checked':''} /> <img src='${data.logo}' alt='${data.name}' style='width:28px;height:18px;object-fit:contain;'> ${data.name}</label>`;
+      });
+      html += `</div>`;
+      html += `<div id='dropdown-credit-detail' style='margin-top:0.7rem;font-size:1.08rem;color:#4a5568;font-weight:500;'></div>`;
+      html += `<button type='submit' style='margin-top:1.2rem;background:#ff8c00;color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:0.3rem;font-size:1.01rem;font-weight:600;cursor:pointer;'>Pilih</button></form>`;
+      creditDropdown.innerHTML = html;
+      creditDropdown.classList.add('active');
+      updateDropdownCreditDetail();
+      creditDropdown.querySelectorAll('input[name="dropdown-credit-option"]').forEach(function(radio){
+        radio.addEventListener('change', updateDropdownCreditDetail);
+      });
+      creditDropdown.querySelector('#dropdown-credit-form').onsubmit = function(e) {
+        e.preventDefault();
+        creditDropdown.classList.remove('active');
+      };
+    }
+    function updateDropdownCreditDetail() {
+      const val = creditDropdown.querySelector('input[name="dropdown-credit-option"]:checked')?.value || 'visa';
+      const data = creditData[val];
+      creditDropdown.querySelector('#dropdown-credit-detail').innerHTML = `<div style='display:flex;align-items:center;gap:0.7rem;'><img src='${data.logo}' alt='${data.name}' style='width:32px;height:20px;object-fit:contain;'><span>${data.name}: <b style='color:#ff8c00;font-size:1.15rem;'>${data.info}</b></span></div>`;
+    }
+    radioCredit.addEventListener('click', function() {
+      showCreditDropdown();
+    });
+    document.addEventListener('click', function(e) {
+      if (!ewalletDropdown.contains(e.target) && e.target !== radioEwallet) {
+        ewalletDropdown.classList.remove('active');
+      }
+      if (!creditDropdown.contains(e.target) && e.target !== radioCredit) {
+        creditDropdown.classList.remove('active');
+      }
+    });
+
+    // Bank Dropdown
+    const radioBank = document.getElementById('radio-bank');
+    const bankDropdown = document.getElementById('bank-dropdown');
+    function showBankDropdown() {
+      let html = `<div style='font-size:1.1rem;color:#2d3748;font-weight:700;margin-bottom:0.7rem;'>Pilih Bank</div>`;
+      html += `<form id='dropdown-bank-form'><div style='display:flex;flex-direction:column;gap:0.7rem;'>`;
+      Object.entries(bankData).forEach(([key, data], i) => {
+        html += `<label style='display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:1.05rem;'><input type='radio' name='dropdown-bank-option' value='${key}' ${i===0?'checked':''} /> <img src='${data.logo}' alt='${data.name}' style='width:28px;height:18px;object-fit:contain;'> ${data.name}</label>`;
+      });
+      html += `</div>`;
+      html += `<div id='dropdown-bank-detail' style='margin-top:0.7rem;font-size:1.08rem;color:#4a5568;font-weight:500;'></div>`;
+      html += `<button type='submit' style='margin-top:1.2rem;background:#ff8c00;color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:0.3rem;font-size:1.01rem;font-weight:600;cursor:pointer;'>Pilih</button></form>`;
+      bankDropdown.innerHTML = html;
+      bankDropdown.classList.add('active');
+      updateDropdownBankDetail();
+      bankDropdown.querySelectorAll('input[name="dropdown-bank-option"]').forEach(function(radio){
+        radio.addEventListener('change', updateDropdownBankDetail);
+      });
+      bankDropdown.querySelector('#dropdown-bank-form').onsubmit = function(e) {
+        e.preventDefault();
+        bankDropdown.classList.remove('active');
+      };
+    }
+    function updateDropdownBankDetail() {
+      const val = bankDropdown.querySelector('input[name="dropdown-bank-option"]:checked')?.value || 'bca';
+      const data = bankData[val];
+      bankDropdown.querySelector('#dropdown-bank-detail').innerHTML = `<div style='display:flex;align-items:center;gap:0.7rem;'><img src='${data.logo}' alt='${data.name}' style='width:32px;height:20px;object-fit:contain;'><span>${data.name}: <b style='color:#ff8c00;font-size:1.15rem;'>${data.norek}</b></span></div>`;
+    }
+    radioBank.addEventListener('click', function() {
+      showBankDropdown();
+    });
+    document.addEventListener('click', function(e) {
+      if (!bankDropdown.contains(e.target) && e.target !== radioBank) {
+        bankDropdown.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html> 

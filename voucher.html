@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voucher & Promosi - SenadaHome</title>
+  <link rel="stylesheet" href="home-style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="header-style.css"/>
+  <style>
+    body { background: #faf8f5; }
+    .voucher-container {
+      max-width: 540px;
+      margin: 2.5rem auto;
+      background: #fff;
+      border-radius: 2.2rem;
+      box-shadow: 0 8px 32px rgba(168,139,115,0.13);
+      padding: 2.2rem 1.5rem 2.5rem 1.5rem;
+      min-height: 520px;
+      position: relative;
+      animation: fadeInCard 0.7s cubic-bezier(.4,1.4,.6,1) both;
+    }
+    .voucher-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #a88b73;
+      margin-bottom: 0.7rem;
+      text-align: center;
+    }
+    .voucher-desc {
+      color: #947459;
+      font-size: 1.01rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .voucher-section-title {
+      font-weight: 700;
+      color: #b88b4a;
+      margin: 1.5rem 0 0.7rem 0;
+      font-size: 1.13rem;
+    }
+    .voucher-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+    .voucher-card {
+      background: #fffbe9;
+      border-radius: 1.2rem;
+      box-shadow: 0 2px 8px rgba(168,139,115,0.07);
+      padding: 1.1rem 1rem 1.1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+      border-left: 7px solid #a88b73;
+    }
+    .voucher-labels {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+    .voucher-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.13rem 0.7rem;
+      border-radius: 0.7rem;
+      background: #b88b4a;
+      color: #fff;
+      letter-spacing: 0.5px;
+      box-shadow: 0 1px 4px rgba(168,139,115,0.10);
+    }
+    .voucher-label.bonus { background: #a88b73; }
+    .voucher-label.extra { background: #947459; }
+    .voucher-label.penukaran { background: #e0d7c3; color: #947459; }
+    .voucher-label.ongkir { background: #b88b4a; }
+    .voucher-label.cashback { background: #a88b73; }
+    .voucher-label.diskon { background: #b88b4a; }
+    .voucher-main {
+      font-size: 1.13rem;
+      font-weight: 700;
+      color: #a88b73;
+      margin-bottom: 0.2rem;
+    }
+    .voucher-desc2 {
+      color: #947459;
+      font-size: 0.98rem;
+      margin-bottom: 0.1rem;
+    }
+    .voucher-min {
+      color: #b88b4a;
+      font-size: 0.97rem;
+      margin-bottom: 0.1rem;
+    }
+    .voucher-exp {
+      color: #b0a08a;
+      font-size: 0.93rem;
+      margin-bottom: 0.1rem;
+    }
+    .voucher-exp.expired { color: #d36c6c; font-weight: 600; }
+    .voucher-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.2rem;
+    }
+    .voucher-btn {
+      background: #a88b73;
+      color: #fff;
+      border: none;
+      border-radius: 1.2rem;
+      font-size: 1.01rem;
+      font-weight: 700;
+      padding: 0.5rem 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(168,139,115,0.10);
+      transition: background 0.2s, transform 0.18s;
+    }
+    .voucher-btn:disabled, .voucher-btn.claimed {
+      background: #e0d7c3;
+      color: #947459;
+      cursor: not-allowed;
+    }
+    .voucher-btn.use {
+      background: #b88b4a;
+      color: #fff;
+    }
+    .voucher-link {
+      color: #b88b4a;
+      font-size: 0.97rem;
+      text-decoration: underline;
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="voucher-container">
+    <div class="voucher-title">Voucher & Promosi</div>
+    <div class="voucher-desc">Klaim voucher berikut agar otomatis digunakan saat Checkout. Anda dapat mengklaim lebih dari satu voucher dan voucher yang sudah diklaim akan otomatis aktif saat pembayaran.</div>
+    <div class="voucher-section-title">Voucher Ongkir</div>
+    <div class="voucher-list" id="voucher-ongkir"></div>
+    <div class="voucher-section-title">Voucher Bonus Cashback</div>
+    <div class="voucher-list" id="voucher-cashback"></div>
+    <div class="voucher-section-title">Voucher Diskon</div>
+    <div class="voucher-list" id="voucher-diskon"></div>
+  </div>
+  <script>
+    // Data voucher
+    const vouchers = {
+      ongkir: [
+        {
+          id: 'ongkir1',
+          labels: ['EXTRA', 'Voucher Ongkir'],
+          main: 'Voucher Ongkir',
+          desc: 'Diskon ongkir Rp20rb untuk pesanan Rp100rb+',
+          min: 'Min. belanja Rp100rb',
+          exp: 'Berlaku 1 hari setelah klaim',
+          expired: false
+        },
+        {
+          id: 'ongkir2',
+          labels: ['EXTRA', 'Voucher Ongkir'],
+          main: 'Voucher Ongkir',
+          desc: 'Diskon ongkir Rp20rb untuk pesanan Rp20rb+',
+          min: 'Min. belanja Rp20rb',
+          exp: 'Kedaluwarsa dalam 15 jam',
+          expired: false
+        }
+      ],
+      cashback: [
+        {
+          id: 'cashback1',
+          labels: ['BONUS', 'Voucher Cashback'],
+          main: 'Cashback 4%',
+          desc: 'Min. belanja Rp200rb, maks. Rp20.000',
+          min: 'Min. belanja Rp200rb',
+          exp: 'Berlaku 1 hari setelah klaim',
+          expired: false
+        }
+      ],
+      diskon: [
+        {
+          id: 'diskon1',
+          labels: ['EXTRA', 'Voucher Diskon'],
+          main: 'Diskon 8%',
+          desc: 'Min. belanja Rp120rb, Maksimum diskon Rp10rb',
+          min: 'Min. belanja Rp120rb',
+          exp: 'Berlaku 1 hari setelah klaim',
+          expired: false
+        },
+        {
+          id: 'diskon2',
+          labels: ['EXTRA', 'Voucher Diskon', 'Penukaran terbatas'],
+          main: 'Diskon 10%',
+          desc: 'Min. belanja Rp150rb, Maksimum diskon Rp30rb',
+          min: 'Min. belanja Rp150rb',
+          exp: 'Berlaku 1 hari setelah klaim',
+          expired: false
+        }
+      ]
+    };
+    // Ambil voucher yang sudah diklaim dari localStorage
+    let claimed = JSON.parse(localStorage.getItem('claimedVouchers') || '[]');
+    function renderVoucherSection(type, elId) {
+      const el = document.getElementById(elId);
+      el.innerHTML = '';
+      vouchers[type].forEach(v => {
+        const isClaimed = claimed.includes(v.id);
+        el.innerHTML += `<div class="voucher-card">
+          <div class="voucher-labels">${v.labels.map(l=>`<span class='voucher-label ${l.toLowerCase().replace(/ /g,'')}'">${l}</span>`).join('')}</div>
+          <div class="voucher-main">${v.main}</div>
+          <div class="voucher-desc2">${v.desc}</div>
+          <div class="voucher-min">${v.min}</div>
+          <div class="voucher-exp${v.expired?' expired':''}">${v.exp}</div>
+          <div class="voucher-actions">
+            <button class="voucher-btn${isClaimed?' claimed':''}" ${isClaimed?'disabled':''} data-id="${v.id}">${isClaimed?'Terklaim':'Klaim'}</button>
+            <a class="voucher-link" href="#" onclick="alert('Syarat & Ketentuan berlaku untuk voucher ini.')">S&K berlaku</a>
+          </div>
+        </div>`;
+      });
+    }
+    renderVoucherSection('ongkir', 'voucher-ongkir');
+    renderVoucherSection('cashback', 'voucher-cashback');
+    renderVoucherSection('diskon', 'voucher-diskon');
+    // Event klaim voucher
+    document.body.addEventListener('click', function(e) {
+      if(e.target.classList.contains('voucher-btn') && !e.target.classList.contains('claimed')) {
+        const id = e.target.dataset.id;
+        claimed.push(id);
+        localStorage.setItem('claimedVouchers', JSON.stringify(claimed));
+        renderVoucherSection('ongkir', 'voucher-ongkir');
+        renderVoucherSection('cashback', 'voucher-cashback');
+        renderVoucherSection('diskon', 'voucher-diskon');
+      }
+    });
+  </script>
+</body>
+</html> 

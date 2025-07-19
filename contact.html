@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact - SenadaHome</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="header-style.css"/>
+  <link rel="stylesheet" href="shop-style.css"/>
+  <style>
+
+    /* Contact Form Styles */
+    .contact-container { max-width: 900px; margin: 3rem auto; background: #fff; border-radius: 0px; box-shadow: 0 4px 24px rgba(45,55,72,0.08); padding: 2.5rem 2rem; }
+    .contact-title { font-size: 2.2rem; font-weight: 800; color: #ff8c00; margin-bottom: 1.5rem; text-align: center; }
+    .contact-desc { color: #2d3748; font-size: 1.15rem; margin-bottom: 2rem; text-align: center; line-height: 1.7; }
+    .contact-form { max-width: 500px; margin: 0 auto 2.5rem auto; display: flex; flex-direction: column; gap: 1.2rem; }
+    .contact-form label { font-weight: 600; color: #2d3748; margin-bottom: 0.3rem; }
+    .contact-form input, .contact-form textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid #e2e8f0; border-radius: 0px; font-size: 1rem; background: #f7fafc; color: #2d3748; }
+    .contact-form textarea { min-height: 100px; resize: vertical; }
+    .contact-form button { background: #ff8c00; color: #fff; border: none; border-radius: 0px; padding: 0.9rem 2.2rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: background 0.18s; }
+    .contact-form button:hover { background: #e67e00; }
+    .contact-info { max-width: 500px; margin: 0 auto; background: #faf8f5; border-radius: 0px; box-shadow: 0 2px 10px rgba(45,55,72,0.08); padding: 1.5rem 2rem; }
+    .contact-info h2 { color: #2d3748; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
+    .contact-item { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem; color: #4a5568; font-size: 1.05rem; }
+    .contact-item i { color: #ff8c00; font-size: 1.1rem; }
+    @media (max-width: 600px) { .contact-container { padding: 1.2rem 0.5rem; } .contact-info, .contact-form { padding: 1rem; } }
+
+    /* Footer Styles */
+    .footer { 
+      background: #2d3748; 
+      color: #a0aec0; 
+      font-size: 0.95rem; 
+      padding: 3rem 0 2rem 0; 
+      margin-top: 3rem; 
+    }
+
+    .footer-main { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 3rem; 
+      justify-content: space-between; 
+    }
+
+    .footer-col { 
+      flex: 1 1 250px; 
+      min-width: 250px; 
+      margin-bottom: 2rem; 
+    }
+
+    .footer-title { 
+      font-weight: 700; 
+      color: #fff; 
+      margin-bottom: 1rem; 
+      font-size: 1.1rem; 
+    }
+
+    .footer-link { 
+      color: #ff8c00; 
+      text-decoration: none; 
+      display: block; 
+      margin-bottom: 0.5rem; 
+      transition: color 0.2s; 
+    }
+
+    .footer-link:hover { 
+      color: #fff; 
+    }
+
+    .categories-link {
+      color: #a0aec0 !important;
+    }
+
+    .categories-link:hover {
+      color: #fff !important;
+    }
+
+    /* Contact Info Styles */
+    .contact-info { 
+      margin-bottom: 1.5rem; 
+    }
+
+    .contact-item { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      margin-bottom: 0.5rem; 
+    }
+
+    .contact-item i { 
+      color: #ff8c00; 
+      width: 16px; 
+    }
+
+    /* Form contact item styles */
+    .contact-container .contact-item {
+      color: #4a5568;
+    }
+
+    .contact-container .contact-item i {
+      color: #ff8c00;
+      font-size: 1.1rem;
+    }
+
+    /* Footer Contact Info tanpa background */
+    .footer .contact-item {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      color: #a0aec0;
+      font-size: 0.95rem;
+    }
+
+    .footer .contact-item span {
+      color: #a0aec0;
+    }
+
+    .footer .contact-item i {
+      color: #ff8c00;
+      width: 16px;
+    }
+
+    .social-media { 
+      display: flex; 
+      gap: 1rem; 
+      margin-bottom: 1.5rem; 
+    }
+
+    .social-icon { 
+      color: #ff8c00; 
+      font-size: 1.2rem; 
+      transition: color 0.2s; 
+    }
+
+    .social-icon:hover { 
+      color: #fff; 
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-left">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fas fa-home"></i>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">SenadaHome</div>
+          <div class="brand-subtitle">Mewujudkan Hunian Impian</div>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="contact.html" class="nav-link active">Contact</a>
+      </nav>
+    </div>
+    <div class="header-center">
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search for products...">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="auth-buttons">
+        <a href="login.html" class="login-btn">
+          <i class="fas fa-crown"></i>
+          Login
+        </a>
+        <a href="register.html" class="register-btn">Register</a>
+      </div>
+      <a href="wishlist.html" class="header-btn">
+        <i class="far fa-heart"></i>
+      </a>
+      <a href="checkout.html" class="header-btn">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </div>
+  </header>
+  <div class="contact-container">
+    <div class="contact-title">Hubungi Kami</div>
+    <div class="contact-desc">
+      Kami siap membantu Anda! Silakan hubungi kami melalui form di bawah ini atau kontak langsung ke customer service kami.
+    </div>
+    <form class="contact-form" onsubmit="event.preventDefault(); alert('Pesan Anda telah dikirim!'); this.reset();">
+      <div>
+        <label for="name">Nama</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div>
+        <label for="message">Pesan</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <button type="submit">Kirim Pesan</button>
+    </form>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-main">
+      <div class="footer-col">
+        <h3 class="footer-title">SenadaHome</h3>
+        <p style="color: #a0aec0; margin-bottom: 1rem;">Toko furniture terpercaya dengan kualitas terbaik dan harga terjangkau untuk melengkapi hunian impian Anda.</p>
+        <div class="social-media">
+          <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+  <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Quick Links</h3>
+        <a href="index.html" class="footer-link">Home</a>
+        <a href="shop.html" class="footer-link">Shop</a>
+        <a href="about.html" class="footer-link">About Us</a>
+        <a href="contact.html" class="footer-link">Contact</a>
+        <a href="blog.html" class="footer-link">Blog</a>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Categories</h3>
+        <a href="#" class="footer-link categories-link">Living Room</a>
+        <a href="#" class="footer-link categories-link">Dining Room</a>
+        <a href="#" class="footer-link categories-link">Bedroom</a>
+        <a href="#" class="footer-link categories-link">Office</a>
+        <a href="#" class="footer-link categories-link">Outdoor</a>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Contact Info</h3>
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Sebrang, Fakfak Papua Barat</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-phone"></i>
+          <span>+62 812-3456-7890</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>info@senadahome.com</span>
+        </div>
+        <div class="contact-item">
+          <i class="fab fa-whatsapp"></i>
+          <span>+62 812-3456-7890</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-clock"></i>
+          <span>Senin - Sabtu: 08:00 - 21:00</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer Bottom Sections -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 0; border-top: 1px solid #4a5568;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        
+        <!-- Metode Pembayaran -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Metode Pembayaran</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem;">
+            <img src="images/visa-logo.jpg" alt="Visa" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/mastercard-logo.jpg" alt="Mastercard" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/jcb-logo.png" alt="JCB" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/mandiri-logo.jpg" alt="Mandiri" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bca-logo.jpg" alt="BCA" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bni-logo.jpg" alt="BNI" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bri-logo.jpg" alt="BRI" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/ovo-logo.jpg" alt="OVO" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/dana-logo.jpg" alt="DANA" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/gopay-logo.jpg" alt="GoPay" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/shopeepay-logo.jpg" alt="ShopeePay" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/cod.jpg" alt="COD" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+          </div>
+        </div>
+        
+        <!-- Jasa Pengiriman -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Jasa Pengiriman</h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/jne-logo.jpg" alt="JNE" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/jnt-logo.jpg" alt="J&T Express" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/ninja-logo.jpg" alt="Ninja Express" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/gojek-logo.jpg" alt="GoSend" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/grab-logo.jpg" alt="GrabExpress" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/lion-logo.jpg" alt="Lion Parcel" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Download App -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Download Aplikasi SenadaHome</h3>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="#" style="display: inline-block; background: #000; padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+              <img src="images/apple.jpg" alt="Apple App Store" style="width: 40px; height: 30px; object-fit: contain;">
+              <div style="color: #fff;">
+                <div style="font-size: 0.7rem; line-height: 1;">Download on the</div>
+                <div style="font-size: 1rem; font-weight: 700; line-height: 1;">App Store</div>
+              </div>
+            </a>
+            <a href="#" style="display: inline-block; background: #000; padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+              <img src="images/store.jpg" alt="Google Play Store" style="width: 40px; height: 40px; object-fit: contain;">
+              <div style="color: #fff;">
+                <div style="font-size: 0.7rem; line-height: 1;">GET IT ON</div>
+                <div style="font-size: 1rem; font-weight: 700; line-height: 1;">Google Play</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <div style="max-width: 1200px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #4a5568;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <p style="color: #a0aec0; margin: 0;">© 2025 SenadaHome. Website E-commerce</p>
+        <p style="color: #a0aec0; margin: 0;">Desain By Yolanda Lia Sri Rahayu</p>
+        <div style="display: flex; gap: 2rem;">
+          <a href="#" style="color: #a0aec0; text-decoration: none;">Privacy Policy</a>
+          <a href="#" style="color: #a0aec0; text-decoration: none;">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Widget WhatsApp Chat -->
+  <a href="https://wa.me/6281234567890" class="wa-chat" target="_blank" style="position:fixed;bottom:24px;right:24px;z-index:9999;background:#25d366;color:#fff;padding:0.7rem 1.2rem;border-radius:2rem;display:flex;align-items:center;gap:0.5rem;font-weight:600;box-shadow:0 2px 8px rgba(45,55,72,0.13);text-decoration:none;"><i class="fab fa-whatsapp"></i> Chat via WhatsApp</a>
+
+  <script src="header-script.js"></script>
+</body>
+</html> 

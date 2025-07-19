@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SenadaHome - Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="header-style.css"/>
+  <style>
+    
+    /* Hero Section */
+.hero-section {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: transparent;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  margin: 1rem auto 2rem auto;
+  box-shadow: none;
+}
+
+.hero-carousel {
+  position: relative;
+  width: fit-content;
+  height: 280px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.carousel-container {
+      display: flex;
+  width: 300%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+  width: 33.333%;
+  height: 100%;
+  position: relative;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.carousel-content h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-content p {
+      font-size: 1rem;
+  margin-bottom: 1.2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+.carousel-btn {
+      position: absolute; 
+      top: 50%; 
+      transform: translateY(-50%); 
+  background: rgba(255, 140, 0, 0.8);
+  color: white;
+  border: none;
+  padding: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 3;
+  transition: background 0.3s;
+}
+
+.carousel-btn:hover {
+  background: rgba(255, 140, 0, 1);
+}
+
+.carousel-btn.prev {
+  left: 20px;
+}
+
+.carousel-btn.next {
+  right: 20px;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+      display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+  transition: background 0.3s;
+}
+
+.dot.active {
+  background: #ff8c00;
+}
+
+
+    .hero-section::before {
+      content: "01";
+      position: absolute;
+      top: 50%;
+      right: 10%;
+      transform: translateY(-50%);
+      font-size: 8rem;
+      font-weight: 900;
+      color: rgba(255,140,0,0.1);
+      z-index: 1;
+    }
+    .hero-content { flex: 1; position: relative; z-index: 2; }
+    .hero-label { color: #718096; font-size: 0.9rem; font-weight: 500; letter-spacing: 1px; margin-bottom: 0.5rem; text-transform: uppercase; }
+    .hero-title { font-size: 3.5rem; font-weight: 900; color: #2d3748; margin-bottom: 1rem; line-height: 1.1; }
+    .hero-title .highlight { color: #ff8c00; text-decoration: underline; }
+    .hero-desc { color: #718096; font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6; }
+    .hero-btn { 
+      background: #ff8c00; 
+      color: #fff; 
+      border: none; 
+      border-radius: 0px; 
+      font-size: 1rem; 
+      font-weight: 600; 
+      padding: 1rem 2.5rem; 
+      cursor: pointer; 
+      transition: background 0.2s, transform 0.18s; 
+    }
+    .hero-btn:hover { background: #e67e00; transform: scale(1.02); }
+    .hero-img { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2; }
+    .hero-img img { max-width: 400px; width: 100%; border-radius: 0px; }
+    
+    /* Categories Section */
+    .category-section { max-width: 1200px; margin: 3rem auto 2rem auto; }
+    .category-title { font-size: 1.8rem; font-weight: 800; color: #2d3748; margin-bottom: 2rem; letter-spacing: 1px; }
+    .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .category-card { 
+      background: #fff; 
+      border-radius: 0px; 
+      box-shadow: 0 2px 10px rgba(45,55,72,0.08); 
+      padding: 2rem 1.5rem; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 1rem; 
+      font-size: 1rem; 
+      color: #2d3748; 
+      font-weight: 600; 
+      transition: box-shadow 0.2s, transform 0.18s; 
+      cursor: pointer; 
+    }
+    .category-card:hover { box-shadow: 0 8px 25px rgba(45,55,72,0.12); transform: scale(1.03); }
+    .category-card i, .category-card img { font-size: 2.5rem; color: #ff8c00; width: 60px; height: 60px; object-fit: contain; }
+    
+    /* Promotional Banners */
+    .promo-section { max-width: 1200px; margin: 3rem auto 2rem auto; }
+    .promo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .promo-banner { 
+      background: #fff; 
+      border-radius: 0px; 
+      box-shadow: 0 4px 24px rgba(45,55,72,0.08); 
+      overflow: hidden; 
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .promo-banner:hover { transform: scale(1.02); }
+    .promo-banner img { width: 100%; height: 250px; object-fit: cover; object-position: center 85%; }
+    .promo-banner img[src*="diningroom"] { object-position: center 65% !important; }
+    .promo-content { 
+      padding: 2rem; 
+      position: absolute; 
+      bottom: 0; 
+      left: 0; 
+      right: 0; 
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      color: #fff;
+    }
+    .promo-discount { font-size: 0.9rem; color: #ff8c00; font-weight: 600; margin-bottom: 0.5rem; }
+    .promo-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; }
+    .promo-btn { 
+      background: #ff8c00; 
+      color: #fff; 
+      border: none; 
+      border-radius: 0px; 
+      padding: 0.8rem 1.5rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: background 0.2s; 
+    }
+    .promo-btn:hover { background: #e67e00; }
+    
+    /* Products Section */
+    .product-section { max-width: 1200px; margin: 3rem auto 2rem auto; }
+    .section-header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 2rem; 
+    }
+    .section-title { font-size: 1.8rem; font-weight: 800; color: #2d3748; letter-spacing: 1px; }
+    .tab-buttons { display: flex; gap: 2rem; }
+    .tab-btn { 
+      background: none; 
+      border: none; 
+      font-size: 1rem; 
+      font-weight: 600; 
+      color: #718096; 
+      padding: 0.5rem 0; 
+      cursor: pointer; 
+      border-bottom: 2px solid transparent; 
+      transition: color 0.18s, border 0.18s; 
+    }
+    .tab-btn.active { color: #ff8c00; border-bottom: 2px solid #ff8c00; }
+    .view-all-btn { 
+      background: #fff; 
+      color: #ff8c00; 
+      border: 1px solid #ff8c00; 
+      border-radius: 0px; 
+      padding: 0.8rem 1.5rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+    }
+    .view-all-btn:hover { background: #ff8c00; color: #fff; }
+    
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+    .product-card { 
+      background: #fff; 
+      border-radius: 0px; 
+      box-shadow: 0 2px 10px rgba(45,55,72,0.08); 
+      padding: 1.5rem; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      position: relative; 
+      transition: box-shadow 0.18s, transform 0.16s; 
+      border: none; 
+    }
+    .product-card:hover { box-shadow: 0 8px 32px rgba(45,55,72,0.15); transform: scale(1.01); }
+    .product-img { width: 120px; height: 120px; object-fit: contain; border-radius: 0px; background: #f7fafc; margin-bottom: 1rem; }
+    .badge-discount { position: absolute; left: 1rem; top: 1rem; background: #ff8c00; color: #fff; font-weight: 700; font-size: 0.8rem; border-radius: 0px; padding: 0.2rem 0.6rem; }
+    .badge-hot { position: absolute; left: 1rem; top: 1rem; background: #e53e3e; color: #fff; font-weight: 700; font-size: 0.8rem; border-radius: 0px; padding: 0.2rem 0.6rem; }
+    .product-name { font-weight: 600; color: #2d3748; font-size: 1rem; margin-bottom: 0.5rem; text-align: center; }
+    .product-rating { color: #ff8c00; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .product-price-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
+    .product-price { color: #2d3748; font-weight: 700; font-size: 1.1rem; }
+    .product-oldprice { color: #a0aec0; text-decoration: line-through; font-size: 0.9rem; }
+    .countdown-timer { 
+      background: #f7fafc; 
+      color: #e53e3e; 
+      font-size: 0.8rem; 
+      font-weight: 600; 
+      padding: 0.3rem 0.6rem; 
+      border-radius: 0px; 
+      margin-top: 0.5rem; 
+    }
+    
+    /* Room Section */
+    .room-section { max-width: 1200px; margin: 3rem auto 2rem auto; }
+    .room-title { font-size: 1.8rem; font-weight: 800; color: #2d3748; margin-bottom: 2rem; letter-spacing: 1px; }
+    .room-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .room-card { 
+      background: #fff; 
+      border-radius: 0px; 
+      box-shadow: 0 2px 10px rgba(45,55,72,0.08); 
+      overflow: hidden; 
+      transition: box-shadow 0.2s, transform 0.18s; 
+      cursor: pointer; 
+    }
+    .room-card:hover { box-shadow: 0 8px 25px rgba(45,55,72,0.12); transform: scale(1.02); }
+    .room-card img { width: 100%; height: 150px; object-fit: cover; object-position: center 70%; }
+    .room-card img[src*="livingroom"] { object-position: center 85%; }
+    .room-card img[src*="diningroom"] { object-position: center 65% !important; }
+    .room-label { padding: 1rem 1.2rem; font-weight: 600; color: #2d3748; font-size: 1rem; background: #fff; }
+    
+    /* Blog Section */
+    .blog-section { max-width: 1200px; margin: 3rem auto 2rem auto; }
+    .blog-title { font-size: 1.8rem; font-weight: 800; color: #2d3748; margin-bottom: 2rem; letter-spacing: 1px; }
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+    .blog-card { 
+      background: #fff; 
+      border-radius: 0px; 
+      box-shadow: 0 2px 10px rgba(45,55,72,0.08); 
+      overflow: hidden; 
+      transition: box-shadow 0.2s, transform 0.18s; 
+      cursor: pointer; 
+    }
+    .blog-card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.06); transform: scale(1.02); }
+    .blog-card img { width: 100%; height: 140px; object-fit: cover; }
+    .blog-label { padding: 1rem 1.2rem; font-weight: 600; color: #2d3748; font-size: 1rem; background: #fff; }
+    
+    /* Footer */
+    .footer { background: #2d3748; color: #a0aec0; font-size: 0.95rem; padding: 3rem 0 2rem 0; margin-top: 3rem; }
+    .footer-main { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 3rem; justify-content: space-between; }
+    .footer-col { flex: 1 1 250px; min-width: 250px; margin-bottom: 2rem; }
+    .footer-title { font-weight: 700; color: #fff; margin-bottom: 1rem; font-size: 1.1rem; }
+    .footer-link { color: #ff8c00; text-decoration: none; display: block; margin-bottom: 0.5rem; transition: color 0.2s; }
+    .footer-link:hover { color: #fff; }
+    
+    .categories-link {
+      color: #a0aec0 !important;
+    }
+    
+    .categories-link:hover {
+      color: #fff !important;
+    }
+    
+    /* Contact Info Styles */
+    .contact-info { margin-bottom: 1.5rem; }
+    .contact-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .contact-item i { color: #ff8c00; width: 16px; }
+    .social-media { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+    .social-icon { color: #ff8c00; font-size: 1.2rem; transition: color 0.2s; }
+    .social-icon:hover { color: #fff; }
+    .consumer-protection { margin-top: 1.5rem; }
+    .consumer-protection p { font-size: 0.85rem; color: #999; margin-bottom: 0.5rem; }
+    .whatsapp-contact { display: flex; align-items: center; gap: 0.5rem; color: #25d366; font-weight: 600; }
+    
+    /* Media Partners */
+    .media-partners { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero-section { flex-direction: column; text-align: center; height: 400px; }
+      .hero-title { font-size: 2.5rem; }
+
+/* Mobile responsive for carousel */
+@media (max-width: 768px) {
+  .hero-section { height: 160px; padding: 0; margin: 0.5rem auto 1rem auto; }
+  .hero-carousel { height: 160px; }
+  .carousel-content h1 { font-size: 1rem; }
+  .carousel-content p { font-size: 0.8rem; }
+  .carousel-btn { padding: 0.6rem; font-size: 1rem; }
+  .carousel-btn.prev { left: 6px; }
+  .carousel-btn.next { right: 6px; }
+}
+      .promo-grid { grid-template-columns: 1fr; }
+      .section-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+    }
+    @media (max-width: 1200px) {
+      .hero-section, .hero-carousel { max-width: 100%; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-left">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fas fa-home"></i>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">SenadaHome</div>
+          <div class="brand-subtitle">Mewujudkan Hunian Impian</div>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link">Shop</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+    </div>
+    
+    <div class="header-center">
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search for products...">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+    </div>
+    
+    <div class="header-right">
+      <div class="auth-buttons">
+        <a href="login.html" class="login-btn">
+          <i class="fas fa-crown"></i>
+          Login
+        </a>
+        <a href="register.html" class="register-btn">Register</a>
+      </div>
+      <a href="wishlist.html" class="header-btn">
+        <i class="far fa-heart"></i>
+      </a>
+      <a href="checkout.html" class="header-btn">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-carousel">
+      <div class="carousel-container">
+        <div class="carousel-slide active">
+          <img src="images/banner-header.jpg" alt="Furniture Banner 1">
+          <div class="carousel-content">
+            <h1>Welcome to SenadaHome</h1>
+            <p>Discover amazing furniture for your home</p>
+            <button class="hero-btn" onclick="window.location.href='shop.html'">Shop Now →</button>
+          </div>
+        </div>
+        <div class="carousel-slide">
+          <img src="images/furnitur.jpg" alt="Furniture Banner 2">
+          <div class="carousel-content">
+            <h1>Premium Quality Furniture</h1>
+            <p>Elegant designs for modern living</p>
+            <button class="hero-btn" onclick="window.location.href='shop.html'">Explore Collection →</button>
+          </div>
+        </div>
+        <div class="carousel-slide">
+          <img src="images/furnituredua.jpg" alt="Furniture Banner 3">
+          <div class="carousel-content">
+            <h1>Transform Your Space</h1>
+            <p>Create the perfect atmosphere with our furniture</p>
+            <button class="hero-btn" onclick="window.location.href='shop.html'">Get Started →</button>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-btn prev" onclick="changeSlide(-1)">❮</button>
+      <button class="carousel-btn next" onclick="changeSlide(1)">❯</button>
+      <div class="carousel-dots">
+        <span class="dot active" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+    </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="category-section">
+    <h2 class="category-title">Shop by categories</h2>
+    <div class="category-grid">
+      <div class="category-card category-shop1">
+        <span class="category-label">49+ Unique products</span>
+        <a href="shop.html" class="category-link">ALL CATEGORIES →</a>
+      </div>
+      <div class="category-card category-shop2">
+        <span class="category-label">Dining Chair</span>
+      </div>
+      <div class="category-card category-shop3">
+        <span class="category-label">Sofas</span>
+      </div>
+      <div class="category-card category-shop4">
+        <span class="category-label">Table</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promotional Banners -->
+  <section class="promo-section">
+    <div class="promo-grid">
+      <div class="promo-banner">
+        <img src="images/livingroom.jpg" alt="Living Room">
+        <div class="promo-content">
+          <div class="promo-discount">30% OFF ALL ORDER</div>
+          <div class="promo-title">Living Room</div>
+          <button class="promo-btn">Shop now</button>
+        </div>
+      </div>
+      <div class="promo-banner">
+        <img src="images/diningroom.jpg" alt="Dining Room">
+        <div class="promo-content">
+          <div class="promo-discount">30% OFF ALL ORDER</div>
+          <div class="promo-title">Dining Room</div>
+          <button class="promo-btn">Shop now</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hot Products Section -->
+  <section class="product-section">
+    <div class="section-header">
+      <h2 class="section-title">Hot Products</h2>
+      <div class="tab-buttons">
+        <button class="tab-btn active" id="tab-latest">LATEST PRODUCTS</button>
+        <button class="tab-btn" id="tab-top">TOP RATING</button>
+        <button class="tab-btn" id="tab-best">BEST SELLERS</button>
+      </div>
+      <button class="view-all-btn" onclick="window.location.href='shop.html'">All products →</button>
+    </div>
+    
+    <div class="product-grid"></div>
+    <div style="display:flex;justify-content:center;gap:1.5rem;margin-top:2.5rem;">
+      <button id="prev-products-btn" style="display:none;padding:0.7rem 1.5rem;border:none;background:#ff8c00;color:#fff;border-radius:1rem;font-weight:600;cursor:pointer;">Prev</button>
+      <button id="next-products-btn" style="display:none;padding:0.7rem 1.5rem;border:none;background:#ff8c00;color:#fff;border-radius:1rem;font-weight:600;cursor:pointer;">Next</button>
+    </div>
+  </section>
+
+  <!-- Room Section -->
+  <section class="room-section">
+    <h2 class="room-title">Shop by Room</h2>
+    <div class="room-grid">
+      <div class="room-card">
+        <img src="images/living2.jpg" alt="Living Room">
+        <div class="room-label">Living Room</div>
+      </div>
+      <div class="room-card">
+        <img src="images/dining2.jpg" alt="Dining Room">
+        <div class="room-label">Dining Room</div>
+      </div>
+      <div class="room-card">
+        <img src="images/bedroom.jpg" alt="Bedroom">
+        <div class="room-label">Bedroom</div>
+      </div>
+      <div class="room-card">
+        <img src="images/office.jpg" alt="Office">
+        <div class="room-label">Office</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section class="blog-section">
+    <h2 class="blog-title">Latest Blog Posts</h2>
+    <div class="blog-grid">
+      <a class="blog-card" href="https://www.anthonymichaelinteriordesign.com/transforming-small-spaces" target="_blank" rel="noopener">
+        <img src="images/interior1.jpg" alt="Tips Desain Ruang Kecil">
+        <div class="blog-label">Transforming Small Spaces into Stylish Havens</div>
+      </a>
+      <a class="blog-card" href="https://www.thespruce.com/how-to-choose-a-sofa-1391251" target="_blank" rel="noopener">
+        <img src="images/interior2.jpg" alt="Panduan Memilih Sofa">
+        <div class="blog-label">How to Choose the Right Sofa for Your Living Room</div>
+      </a>
+      <a class="blog-card" href="https://medium.com/@the_kap_designs/top-10-interior-design-trends-for-2025-e4ee1c5c3c24" target="_blank" rel="noopener">
+        <img src="images/interior3.jpg" alt="Tren Furniture 2024">
+        <div class="blog-label">Top 10 Interior Design Trends for 2025</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-main">
+      <div class="footer-col">
+        <h3 class="footer-title">SenadaHome</h3>
+        <p style="color: #a0aec0; margin-bottom: 1rem;">Toko furniture terpercaya dengan kualitas terbaik dan harga terjangkau untuk melengkapi hunian impian Anda.</p>
+        <div class="social-media">
+          <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Quick Links</h3>
+        <a href="index.html" class="footer-link">Home</a>
+        <a href="shop.html" class="footer-link">Shop</a>
+        <a href="about.html" class="footer-link">About Us</a>
+        <a href="contact.html" class="footer-link">Contact</a>
+        <a href="blog.html" class="footer-link">Blog</a>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Categories</h3>
+        <a href="#" class="footer-link categories-link">Living Room</a>
+        <a href="#" class="footer-link categories-link">Dining Room</a>
+        <a href="#" class="footer-link categories-link">Bedroom</a>
+        <a href="#" class="footer-link categories-link">Office</a>
+        <a href="#" class="footer-link categories-link">Outdoor</a>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Contact Info</h3>
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Sebrang, Fakfak Papua Barat</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>+62 812-3456-7890</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>info@senadahome.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fab fa-whatsapp"></i>
+            <span>+62 812-3456-7890</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-clock"></i>
+            <span>Senin - Sabtu: 08:00 - 21:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer Bottom Sections -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 0; border-top: 1px solid #4a5568;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        
+        <!-- Metode Pembayaran -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Metode Pembayaran</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem;">
+            <img src="images/visa-logo.jpg" alt="Visa" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/mastercard-logo.jpg" alt="Mastercard" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/jcb-logo.png" alt="JCB" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/mandiri-logo.jpg" alt="Mandiri" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bca-logo.jpg" alt="BCA" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bni-logo.jpg" alt="BNI" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bri-logo.jpg" alt="BRI" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/ovo-logo.jpg" alt="OVO" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/dana-logo.jpg" alt="DANA" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/gopay-logo.jpg" alt="GoPay" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/shopeepay-logo.jpg" alt="ShopeePay" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/cod.jpg" alt="COD" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+          </div>
+        </div>
+        
+        <!-- Jasa Pengiriman -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Jasa Pengiriman</h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/jne-logo.jpg" alt="JNE" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/jnt-logo.jpg" alt="J&T Express" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/ninja-logo.jpg" alt="Ninja Express" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/gojek-logo.jpg" alt="GoSend" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/grab-logo.jpg" alt="GrabExpress" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/lion-logo.jpg" alt="Lion Parcel" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Download App -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Download Aplikasi SenadaHome</h3>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="#" style="display: inline-block; background: #000; padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+              <img src="images/apple.jpg" alt="Apple App Store" style="width: 40px; height: 30px; object-fit: contain;">
+              <div style="color: #fff;">
+                <div style="font-size: 0.7rem; line-height: 1;">Download on the</div>
+                <div style="font-size: 1rem; font-weight: 700; line-height: 1;">App Store</div>
+              </div>
+            </a>
+            <a href="#" style="display: inline-block; background: #000; padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+              <img src="images/store.jpg" alt="Google Play Store" style="width: 40px; height: 40px; object-fit: contain;">
+              <div style="color: #fff;">
+                <div style="font-size: 0.7rem; line-height: 1;">GET IT ON</div>
+                <div style="font-size: 1rem; font-weight: 700; line-height: 1;">Google Play</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <div style="max-width: 1200px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #4a5568;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <p style="color: #a0aec0; margin: 0;">© 2025 SenadaHome. Website E-commerce</p>
+        <p style="color: #a0aec0; margin: 0;">Desain By Yolanda Lia Sri Rahayu</p>
+        <div style="display: flex; gap: 2rem;">
+          <a href="#" style="color: #a0aec0; text-decoration: none;">Privacy Policy</a>
+          <a href="#" style="color: #a0aec0; text-decoration: none;">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const count = cart.length;
+    var el = document.getElementById('cart-count');
+    if (el) el.textContent = count;
+  }
+  document.addEventListener('DOMContentLoaded', updateCartCount);
+</script>
+<script src="products.js"></script>
+<script src="header-script.js"></script>
+<script src="home-products.js"></script>
+<script>
+  // Tambahkan widget WhatsApp chat
+  document.addEventListener('DOMContentLoaded', function() {
+    const waChatBtn = document.querySelector('.wa-chat');
+    if (waChatBtn) {
+      waChatBtn.addEventListener('click', function(event) {
+        event.preventDefault();
+        const phoneNumber = '6281234567890'; // Ganti dengan nomor WhatsApp Anda
+        const message = 'Halo! Saya tertarik dengan produk SenadaHome. Bisa bantu saya?';
+        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+      });
+    }
+  });
+</script>
+
+  <script src="carousel.js"></script>
+</body>
+</html>

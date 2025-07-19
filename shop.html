@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SenadaHome - Shop</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="header-style.css"/>
+  <link rel="stylesheet" href="shop-style.css"/>
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-left">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fas fa-home"></i>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">SenadaHome</div>
+          <div class="brand-subtitle">Mewujudkan Hunian Impian</div>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="shop.html" class="nav-link active">Shop</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+    </div>
+    <div class="header-center">
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search for products..." id="search-input">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="auth-buttons">
+        <a href="login.html" class="login-btn">
+          <i class="fas fa-crown"></i>
+          Login
+        </a>
+        <a href="register.html" class="register-btn">Register</a>
+      </div>
+      <a href="wishlist.html" class="header-btn">
+        <i class="far fa-heart"></i>
+      </a>
+      <a href="checkout.html" class="header-btn">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </div>
+  </header>
+  
+  <div class="shop-container">
+    <div class="shop-header">
+      <div class="shop-title" style="text-align: center; width: 100%;">Shop All Products</div>
+      <div class="shop-stats">
+        <span id="product-count">0</span> products available
+      </div>
+    </div>
+    
+    <!-- Products will appear here directly -->
+    <div class="shop-grid" id="shop-grid">
+      <!-- Products will be loaded here immediately -->
+    </div>
+    
+    <div class="shop-grid" id="shop-grid"></div>
+  </div>
+  
+  <script>
+let allProducts = [];
+let filteredProducts = [];
+
+function showError() {
+  const grid = document.getElementById('shop-grid');
+  grid.innerHTML = `
+    <div class="error-container" style="text-align: center; padding: 2rem; color: #e53e3e; grid-column: 1 / -1;">
+      <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+      <p>Failed to load products. Please refresh the page.</p>
+      <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #ff8c00; color: white; border: none; border-radius: 0px; cursor: pointer;">Refresh Page</button>
+    </div>
+  `;
+}
+
+function renderShopProducts() {
+  const grid = document.getElementById('shop-grid');
+  const productCount = document.getElementById('product-count');
+  
+  if (!grid) return;
+  
+  // Use filtered products if available, otherwise use all products
+  const productsToRender = filteredProducts.length > 0 ? filteredProducts : allProducts;
+  
+  productCount.textContent = productsToRender.length;
+  
+  if (productsToRender.length === 0) {
+    grid.innerHTML = `
+      <div class="no-products">
+        <i class="fas fa-search"></i>
+        <p>No products found matching your search.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Get current favorites
+  const favorites = JSON.parse(localStorage.getItem('favorite') || '[]');
+  
+  grid.innerHTML = productsToRender.map((p, i) => {
+    const isFavorite = favorites.some(fav => fav.title === p.name);
+    const heartIcon = isFavorite ? 'fas fa-heart' : 'fa-regular fa-heart';
+    const heartColor = isFavorite ? '#ff8c00' : '#e53e3e';
+    
+        return `
+      <div class="shop-card" onclick="showProductDetail(${allProducts.indexOf(p)})" style="cursor:pointer;">
+      ${p.discount ? `<div class='shop-prod-discount' style='background:#ff8c00;color:#fff;font-weight:700;'>${p.discount}</div>` : ''}
+        <img src="${p.img}" alt="${p.name}" onerror="this.src='images/placeholder.jpg'">
+        
+        <!-- Color Options -->
+        <div class="color-options" style="font-size:0.8rem;color:#718096;margin:0.5rem 0;text-align:center;">
+          ${(() => {
+            const colors = ['Putih', 'Hitam', 'Cokelat', 'Abu-abu', 'Krem', 'Merah', 'Biru', 'Hijau', 'Pink', 'Gold'];
+            const randomColors = [];
+            const numColors = Math.floor(Math.random() * 4) + 2; // 2-5 warna
+            for (let i = 0; i < numColors; i++) {
+              const randomColor = colors[Math.floor(Math.random() * colors.length)];
+              if (!randomColors.includes(randomColor)) {
+                randomColors.push(randomColor);
+              }
+            }
+            return randomColors.length + ' Warna: ' + randomColors.join(', ');
+          })()}
+        </div>
+        
+        <!-- Product Title -->
+      <div class="shop-prod-title">${p.name}</div>
+        
+        <!-- Price Section -->
+        <div class="shop-prod-price-section">
+          ${p.oldprice ? `<div class="old-price-row" style="display:flex;align-items:center;gap:0.5rem;justify-content:center;margin-bottom:0.3rem;">
+            <span class="shop-prod-oldprice" style="color:#a0aec0;text-decoration:line-through;font-size:0.9rem;">Rp ${p.oldprice.toLocaleString('id-ID')}</span>
+            ${p.discount ? `<span class="discount-badge-small" style="background:#e53e3e;color:#fff;padding:0.1rem 0.4rem;border-radius:0px;font-size:0.7rem;font-weight:700;">${p.discount}</span>` : ''}
+          </div>` : ''}
+          
+          <div class="current-price-row" style="text-align:center;margin-bottom:0.5rem;">
+            <span class="shop-prod-price" style="color:${p.oldprice ? '#e53e3e' : '#2d3748'};font-size:1.1rem;font-weight:700;">Rp ${p.price.toLocaleString('id-ID')}</span>
+          </div>
+        </div>
+        
+        <!-- Rating Section -->
+        <div class="rating-section" style="display:flex;align-items:center;justify-content:center;gap:0.3rem;font-size:0.8rem;color:#718096;">
+          <i class="fas fa-star" style="color:#ffd700;font-size:0.7rem;"></i>
+          <span>${(() => {
+            const ratings = [4.2, 4.5, 4.7, 4.8, 4.9, 4.3, 4.6, 4.4, 4.1, 4.0];
+            const reviews = [12, 28, 45, 67, 89, 23, 34, 56, 78, 91, 15, 42, 63, 87, 19];
+            const randomRating = ratings[Math.floor(Math.random() * ratings.length)];
+            const randomReviews = reviews[Math.floor(Math.random() * reviews.length)];
+            return `${randomRating} | ${randomReviews} (ulasan)`;
+          })()}</span>
+        </div>
+        
+        <!-- Action Buttons -->
+        <button class="shop-addcart" title="Add to Cart" onclick="event.stopPropagation();addToCartShop(${allProducts.indexOf(p)})"><i class="fas fa-shopping-cart"></i></button>
+        <button class="shop-addcart" title="${isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}" style="top:48px;right:1.1rem;background:#fff;color:${heartColor};" onclick="event.stopPropagation();addToFavoriteShop(${allProducts.indexOf(p)})"><i class="${heartIcon}"></i></button>
+      </div>
+    `;
+  }).join('');
+}
+
+function addToCartShop(idx) {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const prod = allProducts[idx];
+  cart.push({
+    title: prod.name,
+    price: 'Rp ' + prod.price.toLocaleString('id-ID'),
+    img: prod.img,
+    qty: 1
+  });
+  localStorage.setItem('cart', JSON.stringify(cart));
+  showShopToast('Product successfully added to cart!');
+  updateCartCount();
+}
+
+function addToFavoriteShop(idx) {
+  const fav = JSON.parse(localStorage.getItem('favorite') || '[]');
+  const prod = allProducts[idx];
+  
+  // Check if product already in favorites
+  const existingIndex = fav.findIndex(item => item.title === prod.name);
+  
+  if (existingIndex === -1) {
+    // Add to favorites
+  fav.push({
+    title: prod.name,
+    price: 'Rp ' + prod.price.toLocaleString('id-ID'),
+    img: prod.img
+  });
+  localStorage.setItem('favorite', JSON.stringify(fav));
+    showShopToast('Product added to favorites!');
+    
+    // Change heart icon to filled
+    const heartBtn = event.target.closest('.shop-addcart');
+    if (heartBtn) {
+      heartBtn.innerHTML = '<i class="fas fa-heart"></i>';
+      heartBtn.style.color = '#ff8c00';
+    }
+  } else {
+    // Remove from favorites
+    fav.splice(existingIndex, 1);
+    localStorage.setItem('favorite', JSON.stringify(fav));
+    showShopToast('Product removed from favorites!');
+    
+    // Change heart icon back to outline
+    const heartBtn = event.target.closest('.shop-addcart');
+    if (heartBtn) {
+      heartBtn.innerHTML = '<i class="fa-regular fa-heart"></i>';
+      heartBtn.style.color = '#e53e3e';
+    }
+  }
+}
+
+function showShopToast(msg) {
+  let toast = document.createElement('div');
+  toast.className = 'shop-toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 1800);
+}
+
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  document.getElementById('cart-count').textContent = cart.length;
+}
+
+function filterProducts(searchTerm) {
+  if (!searchTerm.trim()) {
+    filteredProducts = [];
+    renderShopProducts();
+    return;
+  }
+  
+  filteredProducts = allProducts.filter(product => 
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.desc.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  renderShopProducts();
+}
+
+// Products loading is now handled directly in DOMContentLoaded
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('search-input');
+  let searchTimeout;
+  
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      filterProducts(this.value);
+    }, 300);
+  });
+  
+  updateCartCount();
+  
+  // Load products directly without server - using hardcoded data
+  console.log('DOM loaded, loading products directly...');
+  
+  // Use all 50 products directly from products.json data
+  allProducts = [
+    {
+      "img": "images/chair1.jpg",
+      "name": "Soleil Ruru Kursi Recliner Lipat - Putih",
+      "price": 700900,
+      "oldprice": 799900,
+      "discount": "10%",
+      "desc": "Brand: SOLEIL",
+      "detail": "Material dudukan: polyester\nMaterial kaki: steel\nMaterial sandaran: polyester\nFinishing: powder coating\nDaya Beban: 120 kg\nPenempatan: outdoor\nEmpuk dan nyaman\nBantalan dapat dilepas dan dicuci\nMaterial berkualitas dan tahan lama\nRangka yang kokoh dan stabil\nCocok diletakkan di teras atau halaman rumah\nDimensi produk terlipat: 24.5 x 7.5 x 117.5 cm\nDapat diputar: tidak\nDaya Beban: 120 kg\nFinishing: powder coating\nIsi set: 1 pc\nMaterial dudukan: polyester\nMaterial kaki: steel\nMaterial sandaran: polyester\nPenempatan: outdoor\nSistem reclining: ya\nStackable: tidak\nTinggi dudukan: 45.7 cm\nTinggi sandaran: 45.7 cm\nWarna: Putih\nDimensi Kemasan: 120.5 x 12.5 x 67.5 cm\nBerat: 6.3 kg\nSKU: 10640278\nNama Komoditas: RURU LOUNGE CHAIR WITH PADDED BEIGE"
+    },
+    {
+      "img": "images/chair2.jpg",
+      "name": "Informa Linzy Kursi Lounge Kulit 1 Seater - Cokelat",
+      "price": 1789400,
+      "oldprice": 2999000,
+      "discount": "-40%",
+      "desc": "Kursi trendy untuk memberi aksen estetis pada ruangan.",
+      "detail": "Material dudukan: kulit\nMaterial kaki: metal\nMaterial sandaran: PVC leather\nFinishing: powder coating\nDaya Beban: 130 kg\nPenempatan: indoor\nKursi trendy untuk memberi aksen estetis pada ruangan\nDesain ergonomis\nKualitas dudukan dan sandaran empuk\nNyaman saat digunakan\nRangka kuat, kokoh, stabil, dan awet\nSandaran yang dapat menopang mulai dari punggung hingga kepala\nCocok untuk hunian pribadi atau area komersial\nDapat diputar: ya\nDaya Beban: 130 kg\nDimensi produk: 70 cm x 78.5 cm x 107 cm\nFinishing: powder coating\nIsi set: 1 pc\nMaterial dudukan: kulit\nMaterial kaki: metal\nMaterial sandaran: PVC leather\nPenempatan: indoor\nSistem reclining: tidak\nStackable: tidak\nTinggi dudukan: 45 cm\nWarna: Cokelat\nDimensi Kemasan: 76.0 x 76.0 x 83.0 cm\nBerat: 21 kg\nSKU: 10588640\nNama Komoditas: LINZY LOUNGE CHAIR 1 SEATER PVC BROWN"
+    },
+    {
+      "img": "images/chair3.jpg",
+      "name": "Informa Marta Kursi Rotan - Cokelat Natura",
+      "price": 700000,
+      "oldprice": 1999000,
+      "discount": "-64%",
+      "desc": "Cocok untuk kebutuhan rumah tinggal dan area komersial",
+      "detail": "Material dudukan: rotan\nMaterial kaki: steel\nMaterial sandaran: rotan\nPenempatan: indoor\nDapat diputar: tidak\nStackable: tidak\nRangka kursi kokoh dan stabil\nMemiliki bantalan dudukan yang empuk dan nyaman\nMaterial berkualitas dan awet\nCocok untuk kebutuhan rumah tinggal dan area komersial\n*Tidak termasuk bantal sandaran\nDapat diputar: tidak\nDimensi produk: 68 cm x 74 cm x 103.5 cm\nIsi set: 1 pc\nMaterial dudukan: rotan\nMaterial kaki: steel\nMaterial sandaran: rotan\nPenempatan: indoor\nSistem reclining: tidak\nStackable: tidak\nWarna: Cokelat\nDimensi Kemasan: 74.0 x 71.0 x 71.0 cm\nBerat: 9.9 kg\nSKU: 10455134\nNama Komoditas: MARTA EGG CHAIR NATURAL"
+    },
+    {
+      "img": "images/chair4.jpg",
+      "name": "Informa Harper Kursi Lounge Fabric - Cokelat",
+      "price": 4199000,
+      "oldprice": null,
+      "discount": null,
+      "desc": "Kursi berlengan statis, desain elegan dan kokoh.",
+      "detail": "Material dudukan: fabric\nMaterial kaki: plastik PE\nMaterial sandaran: plastik PE\nFinishing: powder coating\nDaya Beban: 150 kg\nPenempatan: indoor & semi outdoor\nAksen rotan yang natural\nRangka kuat, kokoh, dan stabil\nKualitas dudukan dan sandaran yang nyaman\nDilengkapi 1 bantal sandaran dan 1 bantal dudukan\nCocok untuk penggunaan di hunian pribadi atau area komersial\nDapat diputar: tidak\nDaya Beban: 150 kg\nDimensi produk: 63 cm x 75 cm x 95 cm\nFinishing: powder coating\nIsi set: 1 pc\nMaterial dudukan: fabric\nMaterial kaki: plastik PE\nMaterial sandaran: plastik PE\nPenempatan: indoor & semi outdoor\nSistem reclining: tidak\nStackable: tidak\nWarna: Cokelat\nDimensi Kemasan: 110.0 x 66.0 x 40.0 cm\nBerat: 10 kg\nSKU: 10473024\nNama Komoditas: HARPER LOUNGE CHAIR BROWN"
+    },
+    {
+      "img": "images/sofa1.jpg",
+      "name": "Ferrara Biella Set Sofa Kulit - Krem",
+      "price": 4929000,
+      "oldprice": 5436730,
+      "discount": "-10%",
+      "desc": "Sofa kulit premium, desain elegan dan nyaman untuk ruang tamu modern.",
+      "detail": "Material: Kulit sintetis & kayu solid\nUkuran: 200x90x85cm\nWarna: Krem\nKapasitas: 3 dudukan\nBusa tebal, empuk, dan tahan lama\nRangka kokoh\nCocok untuk ruang tamu atau ruang keluarga\nSKU: 20010001"
+    },
+    {
+      "img": "images/sofa2.jpg",
+      "name": "Sofa L Minimalis Abu-abu",
+      "price": 3900000,
+      "oldprice": 5200000,
+      "discount": "-25%",
+      "desc": "Sofa L, cocok untuk ruang keluarga besar.",
+      "detail": "Material: Kain, busa\nUkuran: 250x160x85cm\nWarna: Abu-abu\nKualitas: Premium\nRangka kuat\nBusa empuk\nSKU: 20010002"
+    },
+    {
+      "img": "images/table.jpg",
+      "name": "Meja Kopi Minimalis Kayu & Besi",
+      "price": 1100000,
+      "oldprice": 1400000,
+      "discount": "-21%",
+      "desc": "Meja kopi minimalis, material kayu dan besi.",
+      "detail": "Material: Kayu & besi\nUkuran: 100x50x45cm\nWarna: Coklat\nKualitas: Premium\nDesain modern\nCocok untuk ruang tamu\nSKU: 30020001"
+    },
+    {
+      "img": "images/table2.jpg",
+      "name": "Meja Samping Bulat Putih",
+      "price": 850000,
+      "oldprice": 1100000,
+      "discount": "-23%",
+      "desc": "Meja samping bulat, cocok untuk sudut ruangan.",
+      "detail": "Material: Kayu\nUkuran: 50x50x50cm\nWarna: Putih\nDesain minimalis\nSKU: 30020002"
+    },
+    {
+      "img": "images/lamp2.jpg",
+      "name": "Lampu Meja Kaca & Besi Putih",
+      "price": 550000,
+      "oldprice": 700000,
+      "discount": "-21%",
+      "desc": "Lampu meja modern, pencahayaan hangat.",
+      "detail": "Material: Kaca & besi\nUkuran: 20x20x40cm\nWarna: Putih\nCocok untuk meja kerja atau nakas\nSKU: 40030002"
+    },
+    {
+      "img": "images/clock1.jpg",
+      "name": "Jam Dinding Artistik Kayu Coklat",
+      "price": 450000,
+      "oldprice": 550000,
+      "discount": "-18%",
+      "desc": "Jam dinding kayu, desain unik dan artistik.",
+      "detail": "Material: Kayu\nUkuran: 35x35x5cm\nWarna: Coklat\nCocok untuk ruang keluarga atau kantor\nSKU: 50040001"
+    },
+    {
+      "img": "images/rak1.jpg",
+      "name": "Rak Buku Minimalis 4 Susun",
+      "price": 900000,
+      "oldprice": 1200000,
+      "discount": "-25%",
+      "desc": "Rak buku minimalis, 4 tingkat, hemat tempat.",
+      "detail": "Material: Kayu MDF\nUkuran: 60x30x150cm\nWarna: Putih\nCocok untuk ruang kerja atau kamar tidur\nSKU: 60050001"
+    },
+    {
+      "img": "images/lemari1.jpg",
+      "name": "Lemari Pakaian Sliding 2 Pintu",
+      "price": 2100000,
+      "oldprice": 2600000,
+      "discount": "-19%",
+      "desc": "Lemari pakaian sliding, kapasitas besar.",
+      "detail": "Material: Kayu partikel\nUkuran: 120x55x200cm\nWarna: Coklat muda\n2 pintu sliding\nCocok untuk kamar tidur\nSKU: 70060001"
+    },
+    {
+      "img": "images/sofa3.jpg",
+      "name": "Informa Daphnie Oakland Sofa Bed Fabric - Abu-abu Tua",
+      "price": 1799000,
+      "oldprice": 999000,
+      "discount": "-44%",
+      "desc": "Sofa bed multifungsi dengan desain modern, cocok untuk ruang tamu maupun kamar tidur. Warna abu-abu tua yang elegan memberikan nuansa tenang dan mewah.",
+      "detail": "Material: Kain fabric premium, rangka kayu solid, busa tebal berkualitas. Ukuran: 180x90x80cm. Warna: Abu-abu tua. Fitur: Dapat dijadikan tempat tidur, sandaran dapat diatur, mudah dibersihkan. Cocok untuk apartemen, rumah minimalis, atau ruang keluarga. Kapasitas: 2-3 orang. SKU: 20010003."
+    },
+    {
+      "img": "images/sofa4.jpg",
+      "name": "Informa Neo Faith Sofa Bed Fabric Patchwork - Abu-abu/cokelat",
+      "price": 5399000,
+      "desc": "Sofa bed patchwork dengan kombinasi warna abu-abu dan cokelat, memberikan sentuhan artistik dan unik pada ruangan Anda.",
+      "detail": "Material: Kain patchwork, busa empuk, rangka kayu kuat. Ukuran: 185x95x85cm. Warna: Abu-abu/cokelat. Fitur: Dapat dilipat menjadi tempat tidur, desain ergonomis, mudah dipindahkan. Ideal untuk ruang tamu, kamar tamu, atau studio. Kapasitas: 2 orang. SKU: 20010004."
+    },
+    {
+      "img": "images/table3.jpg",
+      "name": "Kairo Meja Kantor Metal - Putih",
+      "price": 899000,
+      "oldprice": 1399000,
+      "discount": "-35%",
+      "desc": "Meja kantor minimalis dengan rangka metal dan permukaan putih bersih, cocok untuk ruang kerja modern.",
+      "detail": "Material: Metal powder coating, permukaan MDF putih. Ukuran: 120x60x75cm. Warna: Putih. Fitur: Kuat, stabil, mudah dirakit, desain minimalis. Cocok untuk meja kerja, meja belajar, atau meja komputer. SKU: 30020003."
+    },
+    {
+      "img": "images/table4.jpg",
+      "name": "Informa Gamany Meja Komputer - Putih/cokelat",
+      "price": 1299000,
+      "oldprice": 3199000,
+      "discount": "-59%",
+      "desc": "Meja komputer modern dengan kombinasi warna putih dan cokelat, memberikan kesan elegan dan profesional di ruang kerja Anda.",
+      "detail": "Material: Kayu partikel finishing PVC, rangka besi. Ukuran: 140x60x75cm. Warna: Putih/cokelat. Fitur: Terdapat rak tambahan, mudah dirakit, permukaan luas. Cocok untuk komputer, laptop, dan perlengkapan kerja. SKU: 30020004."
+    },
+    {
+      "img": "images/lamp3.jpg",
+      "name": "Eglare Set 3 Pcs Lustre Lampu Meja & Lampu Lantai Brass - Cokelat Walnut/putih",
+      "price": 649000,
+      "oldprice": 1299000,
+      "discount": "-50%",
+      "desc": "Set lampu meja dan lampu lantai dengan sentuhan brass dan warna walnut/putih, menambah kehangatan dan kemewahan pada ruangan.",
+      "detail": "Material: Besi brass, kayu walnut, kap lampu kain. Set terdiri dari 2 lampu meja dan 1 lampu lantai. Warna: Cokelat walnut/putih. Fitur: Cahaya hangat, desain elegan, cocok untuk ruang tamu, kamar tidur, atau ruang baca. SKU: 40030003."
+    },
+    {
+      "img": "images/lamp4.jpg",
+      "name": "Eglare Klara Lampu Lantai - Putih",
+      "price": 479920,
+      "oldprice": 599900,
+      "discount": "-20%",
+      "desc": "Lampu lantai minimalis dengan warna putih bersih, memberikan pencahayaan lembut dan modern di sudut ruangan Anda.",
+      "detail": "Material: Besi, kap lampu kain. Ukuran: 150x30x30cm. Warna: Putih. Fitur: Mudah dipindahkan, desain minimalis, cocok untuk ruang tamu, kamar tidur, atau ruang baca. SKU: 40030004."
+    },
+    {
+      "img": "images/clock2.jpg",
+      "name": "Arthome 10.3 Cm Jam Weker Elp Hya035 - Pink",
+      "price": 29900,
+      "oldprice": 59900,
+      "discount": "-50%",
+      "desc": "Jam weker mungil warna pink, cocok untuk meja belajar atau nakas kamar tidur anak.",
+      "detail": "Material: Plastik ABS, mesin quartz. Ukuran: 10.3cm. Warna: Pink. Fitur: Alarm nyaring, mudah diatur, hemat baterai. Cocok untuk anak-anak atau remaja. SKU: 50040002."
+    },
+    {
+      "img": "images/clock3.jpg",
+      "name": "Arthome Jam Led Digital Wireless Em9927a",
+      "price": 199900,
+      "oldprice": 299900,
+      "discount": "-33%",
+      "desc": "Jam digital LED wireless dengan tampilan modern, cocok untuk meja kerja atau ruang keluarga.",
+      "detail": "Material: Plastik ABS, display LED. Ukuran: 20x8x4cm. Warna: Hitam. Fitur: Wireless, alarm, tampilan waktu dan suhu, hemat energi. Cocok untuk rumah modern. SKU: 50040003."
+    },
+    {
+      "img": "images/clock4.jpg",
+      "name": "Arthome Jam Meja Led Digital 3547 - Putih",
+      "price": 89900,
+      "oldprice": 199900,
+      "discount": "-55%",
+      "desc": "Jam meja LED digital warna putih, desain minimalis dan mudah dibaca, cocok untuk meja kerja atau nakas.",
+      "detail": "Material: Plastik ABS, display LED. Ukuran: 15x6x4cm. Warna: Putih. Fitur: Alarm, tampilan waktu dan suhu, hemat energi. Cocok untuk rumah modern atau kantor. SKU: 50040004."
+    },
+    {
+      "img": "images/mejakantor.jpg",
+      "name": "Kairo Meja Kantor Metal - Putih",
+      "price": 95000,
+      "oldprice": 745000,
+      "discount": "-87%",
+      "desc": "Meja kantor metal dengan desain minimalis dan permukaan putih bersih, ideal untuk ruang kerja yang efisien dan modern.",
+      "detail": "Material: Metal powder coating, permukaan MDF putih. Ukuran: 100x50x75cm. Warna: Putih. Fitur: Kuat dan stabil, mudah dirakit, desain minimalis, cocok untuk laptop atau komputer. Ideal untuk home office atau ruang kerja kecil. SKU: 30020005."
+    },
+    {
+      "img": "images/rakdinding.jpg",
+      "name": "rak dinding minimalis",
+      "price": 67000,
+      "oldprice": 435000,
+      "discount": "-85%",
+      "desc": "Rak dinding minimalis dengan desain sederhana dan elegan, cocok untuk menyimpan buku, dekorasi, atau barang-barang kecil lainnya.",
+      "detail": "Material: Kayu MDF dengan finishing putih. Ukuran: 80x20x15cm. Warna: Putih. Fitur: Mudah dipasang, hemat ruang, desain minimalis, cocok untuk ruang tamu, kamar tidur, atau dapur. Kapasitas penyimpanan optimal untuk buku dan dekorasi. SKU: 60050002."
+    },
+    {
+      "img": "images/item27.jpg",
+      "name": "Informa Igniz Lemari Pajang Dengan Laci - Putih",
+      "price": 8499000,
+      "oldprice": 10899000,
+      "discount": "-22%",
+      "desc": "Lemari pajang dengan laci tambahan, memberikan kombinasi sempurna antara fungsi penyimpanan dan display yang elegan.",
+      "detail": "Material: Kayu partikel dengan finishing PVC putih. Ukuran: 120x40x180cm. Warna: Putih. Fitur: Terdapat laci untuk penyimpanan tertutup, rak terbuka untuk pajangan, desain modern, cocok untuk ruang tamu atau ruang keluarga. Kapasitas penyimpanan optimal dengan kombinasi laci dan rak terbuka. SKU: 70060002."
+    },
+    {
+      "img": "images/item28.jpg",
+      "name": "Eglare Flynn Lampu Gantung Hias E27 D27 - Putih",
+      "price": 559930,
+      "oldprice": 799900,
+      "discount": "-30%",
+      "desc": "Lampu gantung hias dengan desain modern dan elegan, memberikan pencahayaan yang hangat dan menciptakan suasana yang nyaman di ruangan.",
+      "detail": "Material: Besi dengan kap lampu kaca putih. Ukuran: 40x40x60cm. Warna: Putih. Fitur: Menggunakan bohlam E27, pencahayaan hangat, desain elegan, cocok untuk ruang makan, ruang tamu, atau foyer. Menciptakan suasana yang mewah dan nyaman. SKU: 40030005."
+    },
+    {
+      "img": "images/item29.jpg",
+      "name": "Eglare Harlow Lampu Gantung Hias 22l E14 - Gold",
+      "price": 6999000,
+      "desc": "Lampu gantung hias dengan aksen gold yang mewah, memberikan sentuhan kemewahan dan elegan pada ruangan Anda.",
+      "detail": "Material: Besi dengan finishing gold, kap lampu kaca. Ukuran: 50x50x70cm. Warna: Gold. Fitur: Menggunakan bohlam E14, pencahayaan hangat, desain mewah, cocok untuk ruang makan formal, ruang tamu mewah, atau area resepsi. Menciptakan suasana yang glamor dan elegan. SKU: 40030006."
+    },
+    {
+      "img": "images/item30.jpg",
+      "name": "Sieben Meja Kantor Adjustable Lift Up 120 - Cokelat",
+      "price": 3999000,
+      "oldprice": 4599000,
+      "discount": "-13%",
+      "desc": "Meja kantor adjustable dengan sistem lift up yang inovatif, memungkinkan pengaturan tinggi meja sesuai kebutuhan ergonomis.",
+      "detail": "Material: Kayu solid dengan rangka besi. Ukuran: 120x60x75cm (adjustable). Warna: Cokelat. Fitur: Sistem lift up elektrik, pengaturan tinggi 65-125cm, permukaan luas, cocok untuk ruang kerja modern. Ideal untuk home office atau kantor yang mengutamakan ergonomis. SKU: 30020006."
+    },
+    {
+      "img": "images/item31.jpg",
+      "name": "Informa Sergio Meja Kantor Extendable - Putih",
+      "price": 1699000,
+      "oldprice": 3199000,
+      "discount": "-47%",
+      "desc": "Meja kantor extendable dengan permukaan yang dapat diperluas, memberikan fleksibilitas maksimal untuk berbagai kebutuhan kerja.",
+      "detail": "Material: Kayu partikel dengan finishing PVC putih. Ukuran: 120-180x60x75cm (extendable). Warna: Putih. Fitur: Permukaan dapat diperluas, sistem sliding yang halus, cocok untuk komputer dan laptop, ideal untuk ruang kerja yang membutuhkan fleksibilitas. SKU: 30020007."
+    },
+    {
+      "img": "images/item32.jpg",
+      "name": "Informa Martis Oakland Sofa Bed Fabric - Cokelat",
+      "price": 1199000,
+      "oldprice": 1999000,
+      "discount": "-40%",
+      "desc": "Sofa bed dengan kain fabric berkualitas tinggi, memberikan kenyamanan maksimal baik sebagai sofa maupun tempat tidur.",
+      "detail": "Material: Kain fabric premium, rangka kayu solid, busa tebal. Ukuran: 180x90x80cm. Warna: Cokelat. Fitur: Dapat dijadikan tempat tidur, sandaran dapat diatur, mudah dibersihkan, cocok untuk apartemen atau ruang tamu. Kapasitas: 2-3 orang. SKU: 20010005."
+    },
+    {
+      "img": "images/item33.jpg",
+      "name": "Informa Neo Faith Sofa Bed Fabric Patchwork - Abu-abu/cokelat",
+      "price": 5399000,
+      "desc": "Sofa bed patchwork dengan kombinasi warna abu-abu dan cokelat yang unik, memberikan sentuhan artistik pada ruangan.",
+      "detail": "Material: Kain patchwork, busa empuk, rangka kayu kuat. Ukuran: 185x95x85cm. Warna: Abu-abu/cokelat. Fitur: Dapat dilipat menjadi tempat tidur, desain ergonomis, mudah dipindahkan, ideal untuk ruang tamu atau kamar tamu. Kapasitas: 2 orang. SKU: 20010006."
+    },
+    {
+      "img": "images/item34.jpg",
+      "name": "Informa Onyx Lampu Meja - Gold",
+      "price": 299000,
+      "oldprice": 499000,
+      "discount": "-40%",
+      "desc": "Lampu meja dengan aksen gold yang elegan, memberikan pencahayaan yang hangat dan menciptakan suasana yang nyaman.",
+      "detail": "Material: Besi dengan finishing gold, kap lampu kaca. Ukuran: 25x25x45cm. Warna: Gold. Fitur: Pencahayaan hangat, desain elegan, cocok untuk meja kerja, nakas, atau meja samping. Menciptakan suasana yang mewah dan nyaman. SKU: 40030007."
+    },
+    {
+      "img": "images/item35.jpg",
+      "name": "Informa Gleda Lampu Meja - Putih",
+      "price": 149000,
+      "desc": "Lampu meja minimalis dengan warna putih bersih, memberikan pencahayaan yang lembut dan modern.",
+      "detail": "Material: Besi dengan kap lampu kaca putih. Ukuran: 20x20x40cm. Warna: Putih. Fitur: Desain minimalis, pencahayaan lembut, cocok untuk meja kerja, nakas, atau meja samping. Ideal untuk ruangan dengan tema minimalis. SKU: 40030008."
+    },
+    {
+      "img": "images/item36.jpg",
+      "name": "Informa Stacy Lampu Meja - Cokelat Muda",
+      "price": 159000,
+      "oldprice": 249000,
+      "discount": "-36%",
+      "desc": "Lampu meja dengan warna cokelat muda yang hangat, memberikan pencahayaan yang nyaman dan menciptakan suasana yang cozy.",
+      "detail": "Material: Besi dengan kap lampu kain cokelat muda. Ukuran: 22x22x42cm. Warna: Cokelat muda. Fitur: Pencahayaan hangat, desain modern, cocok untuk meja kerja, nakas, atau meja samping. Menciptakan suasana yang hangat dan nyaman. SKU: 40030009."
+    },
+    {
+      "img": "images/item37.jpg",
+      "name": "Soleil Kursi Teras Berlengan - Hitam",
+      "price": 279930,
+      "oldprice": 399900,
+      "discount": "-30%",
+      "desc": "Kursi teras berlengan dengan warna hitam yang elegan, cocok untuk area outdoor yang membutuhkan kenyamanan maksimal.",
+      "detail": "Material: Plastik PE dengan rangka besi. Ukuran: 65x75x95cm. Warna: Hitam. Fitur: Tahan cuaca, mudah dibersihkan, desain ergonomis, cocok untuk teras, balkon, atau taman. Daya tahan tinggi untuk penggunaan outdoor. SKU: 10010005."
+    },
+    {
+      "img": "images/item38.jpg",
+      "name": "Soleil Kursi Teras Anyaman - Abu-abu",
+      "price": 149950,
+      "oldprice": 299900,
+      "discount": "-50%",
+      "desc": "Kursi teras anyaman dengan warna abu-abu yang netral, memberikan kenyamanan dan estetika yang seimbang.",
+      "detail": "Material: Anyaman rotan sintetis dengan rangka besi. Ukuran: 60x70x90cm. Warna: Abu-abu. Fitur: Tahan cuaca, desain natural, mudah dibersihkan, cocok untuk teras, balkon, atau area outdoor. Memberikan nuansa natural dan nyaman. SKU: 10010006."
+    },
+    {
+      "img": "images/item39.jpg",
+      "name": "Informa Chiyo Lampu Meja - Gold",
+      "price": 299000,
+      "oldprice": 599000,
+      "discount": "-50%",
+      "desc": "Lampu meja dengan aksen gold yang mewah, memberikan pencahayaan yang hangat dan menciptakan suasana yang elegan.",
+      "detail": "Material: Besi dengan finishing gold, kap lampu kaca. Ukuran: 28x28x48cm. Warna: Gold. Fitur: Pencahayaan hangat, desain mewah, cocok untuk meja kerja, nakas, atau meja samping. Menciptakan suasana yang glamor dan nyaman. SKU: 40030010."
+    },
+    {
+      "img": "images/item40.jpg",
+      "name": "Informa Gleda Lampu Meja - Hitam",
+      "price": 149000,
+      "desc": "Lampu meja minimalis dengan warna hitam yang elegan, memberikan pencahayaan yang modern dan sophisticated.",
+      "detail": "Material: Besi dengan kap lampu kaca hitam. Ukuran: 20x20x40cm. Warna: Hitam. Fitur: Desain minimalis, pencahayaan modern, cocok untuk meja kerja, nakas, atau meja samping. Ideal untuk ruangan dengan tema modern dan elegan. SKU: 40030011."
+    },
+    {
+      "img": "images/item41.jpg",
+      "name": "Soleil 2.5 Mtr Patio Payung Taman - Krem",
+      "price": 639920,
+      "oldprice": 799900,
+      "discount": "-20%",
+      "desc": "Payung taman dengan diameter 2.5 meter dan warna krem yang elegan, memberikan perlindungan maksimal dari sinar matahari.",
+      "detail": "Material: Kain polyester tahan UV dengan rangka aluminium. Ukuran: Diameter 2.5m, tinggi 2.3m. Warna: Krem. Fitur: Tahan UV, mudah dibuka/tutup, cocok untuk taman, teras, atau area outdoor. Memberikan perlindungan optimal dari sinar matahari. SKU: 80070001."
+    },
+    {
+      "img": "images/item42.jpg",
+      "name": "Soleil Roma Payung Taman Triple Dengan Lampu Led - Hitam",
+      "price": 5999000,
+      "oldprice": 6999000,
+      "discount": "-14%",
+      "desc": "Payung taman triple dengan lampu LED terintegrasi, memberikan kombinasi sempurna antara perlindungan dan pencahayaan.",
+      "detail": "Material: Kain polyester tahan UV dengan rangka aluminium dan lampu LED. Ukuran: Diameter 3m, tinggi 2.5m. Warna: Hitam. Fitur: Lampu LED terintegrasi, tahan UV, mudah dibuka/tutup, cocok untuk taman atau area outdoor. Memberikan perlindungan dan pencahayaan sekaligus. SKU: 80070002."
+    },
+    {
+      "img": "images/item43.jpg",
+      "name": "Informa Kylie Lampu Gantung Hias - Cokelat Coffee",
+      "price": 6999000,
+      "desc": "Lampu gantung hias dengan warna cokelat coffee yang hangat, memberikan pencahayaan yang nyaman dan menciptakan suasana yang cozy.",
+      "detail": "Material: Besi dengan kap lampu kaca cokelat. Ukuran: 45x45x65cm. Warna: Cokelat coffee. Fitur: Pencahayaan hangat, desain elegan, cocok untuk ruang makan, ruang tamu, atau area keluarga. Menciptakan suasana yang hangat dan nyaman. SKU: 40030012."
+    },
+    {
+      "img": "images/item44.jpg",
+      "name": "Informa 7 Ltr Tempat Sampah Push Cover - Putih",
+      "price": 129000,
+      "oldprice": 199000,
+      "discount": "-35%",
+      "desc": "Tempat sampah dengan sistem push cover yang praktis, memberikan kemudahan dalam membuang sampah tanpa perlu menyentuh tutup.",
+      "detail": "Material: Plastik HDPE dengan sistem push cover. Kapasitas: 7 liter. Warna: Putih. Fitur: Sistem push cover, mudah dibersihkan, cocok untuk dapur, kamar mandi, atau area indoor. Desain praktis dan higienis. SKU: 90080001."
+    },
+    {
+      "img": "images/item45.jpg",
+      "name": "Krisbow Tempat Sampah Dalam Ruangan 22.5x27 Cm - Merah",
+      "price": 145900,
+      "oldprice": 255300,
+      "discount": "-43%",
+      "desc": "Tempat sampah dalam ruangan dengan warna merah yang eye-catching, memberikan aksen warna yang menarik pada ruangan.",
+      "detail": "Material: Plastik ABS dengan tutup. Ukuran: 22.5x27cm. Warna: Merah. Fitur: Tutup rapat, mudah dibersihkan, cocok untuk ruang tamu, kamar tidur, atau area indoor. Memberikan aksen warna yang menarik. SKU: 90080002."
+    },
+    {
+      "img": "images/item46.jpg",
+      "name": "Informa 15 Ltr Ford Tempat Sampah Pedal & Push - Putih",
+      "price": 169000,
+      "desc": "Tempat sampah dengan sistem pedal dan push yang inovatif, memberikan kemudahan maksimal dalam membuang sampah.",
+      "detail": "Material: Plastik HDPE dengan sistem pedal dan push. Kapasitas: 15 liter. Warna: Putih. Fitur: Sistem pedal dan push, tutup rapat, mudah dibersihkan, cocok untuk dapur atau area komersial. Desain praktis dan higienis. SKU: 90080003."
+    },
+    {
+      "img": "images/item47.jpg",
+      "name": "Krisbow 25 Ltr Tempat Sampah Pedal Stainless",
+      "price": 1245400,
+      "oldprice": 1465200,
+      "discount": "-15%",
+      "desc": "Tempat sampah pedal stainless steel dengan kapasitas besar, ideal untuk area komersial atau penggunaan intensif.",
+      "detail": "Material: Stainless steel dengan sistem pedal. Kapasitas: 25 liter. Warna: Silver. Fitur: Sistem pedal, tahan karat, mudah dibersihkan, cocok untuk area komersial, dapur, atau penggunaan intensif. Kualitas premium untuk penggunaan berat. SKU: 90080004."
+    },
+    {
+      "img": "images/item48.jpg",
+      "name": "Krisbow 40 Ltr Tempat Sampah Stainless",
+      "price": 1199000,
+      "desc": "Tempat sampah stainless steel dengan kapasitas ekstra besar, cocok untuk area komersial atau penggunaan dengan volume sampah tinggi.",
+      "detail": "Material: Stainless steel. Kapasitas: 40 liter. Warna: Silver. Fitur: Tahan karat, mudah dibersihkan, kapasitas besar, cocok untuk area komersial, restoran, atau penggunaan dengan volume tinggi. Ideal untuk penggunaan komersial. SKU: 90080005."
+    },
+    {
+      "img": "images/item49.jpg",
+      "name": "Informa New Windsor Sofa Bed - Krem/cokelat Tua",
+      "price": 1799000,
+      "oldprice": 3499000,
+      "discount": "-49%",
+      "desc": "Sofa bed dengan kombinasi warna krem dan cokelat tua yang elegan, memberikan kenyamanan maksimal baik sebagai sofa maupun tempat tidur.",
+      "detail": "Material: Kain fabric premium dengan kombinasi krem dan cokelat tua, rangka kayu solid, busa tebal. Ukuran: 190x95x85cm. Warna: Krem/cokelat tua. Fitur: Dapat dijadikan tempat tidur, sandaran dapat diatur, mudah dibersihkan, cocok untuk ruang tamu atau kamar tamu. Kapasitas: 2-3 orang. SKU: 20010007."
+    },
+    {
+      "img": "images/item50.jpg",
+      "name": "Krisbow Nebula Lampu Taman 400 Lumens 3000k - Abu-abu",
+      "price": 539910,
+      "oldprice": 599900,
+      "discount": "-10%",
+      "desc": "Lampu taman LED dengan output 400 lumens dan suhu warna 3000K, memberikan pencahayaan yang optimal untuk area outdoor.",
+      "detail": "Material: Aluminium dengan lensa polycarbonate. Output: 400 lumens, suhu warna 3000K. Warna: Abu-abu. Fitur: Tahan cuaca, hemat energi, pencahayaan optimal, cocok untuk taman, jalan setapak, atau area outdoor. Memberikan pencahayaan yang nyaman dan efisien. SKU: 40030013."
+    },
+    {
+      "img": "images/chair5.jpg",
+      "name": "Informa Harper Kursi Lounge Fabric - Abu-abu",
+      "price": 3899000,
+      "oldprice": 4599000,
+      "discount": "-15%",
+      "desc": "Kursi lounge fabric dengan warna abu-abu yang elegan, memberikan kenyamanan maksimal untuk ruang tamu modern.",
+      "detail": "Material: Kain fabric premium, rangka kayu solid, busa tebal. Ukuran: 75x85x95cm. Warna: Abu-abu. Fitur: Desain ergonomis, sandaran nyaman, cocok untuk ruang tamu, ruang keluarga, atau area baca. Kapasitas: 1 orang. SKU: 10010007."
+    },
+    {
+      "img": "images/lamp1.jpg",
+      "name": "Informa Leah Lampu Gantung Hias - Abu-abu",
+      "price": 2.999000,
+      "desc": "Lampu gantung modern, pencahayaan hangat.",
+      "detail": "Material: Besi\nUkuran: 30x30x40cm\nWarna: Abu-abu\nCocok untuk ruang makan atau ruang tamu\nSKU: 40030001"
+    },
+    {
+      "img": "images/furnitur.jpg",
+      "name": "Set Furniture Minimalis Modern - Abu-abu",
+      "price": 2899000,
+      "oldprice": 3599000,
+      "discount": "-19%",
+      "desc": "Set furniture minimalis dengan desain modern, cocok untuk ruang tamu yang elegan.",
+      "detail": "Material: Kayu MDF dengan finishing premium, kain fabric berkualitas. Set terdiri dari sofa 2 seater, meja kopi, dan 2 kursi samping. Warna: Abu-abu. Fitur: Desain minimalis, nyaman, mudah dibersihkan, cocok untuk ruang tamu modern. SKU: 20010008."
+    }
+  ];
+  
+  console.log('Products loaded directly:', allProducts.length);
+  renderShopProducts();
+});
+
+function showProductDetail(idx) {
+  const p = allProducts[idx];
+  const modal = document.getElementById('product-modal');
+  const body = document.getElementById('modal-body');
+  
+  // Check if product is in favorites
+  const favorites = JSON.parse(localStorage.getItem('favorite') || '[]');
+  const isFavorite = favorites.some(fav => fav.title === p.name);
+  const heartIcon = isFavorite ? 'fas fa-heart' : 'far fa-heart';
+  const heartColor = isFavorite ? '#ff8c00' : '#e53e3e';
+  const heartText = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
+  
+  body.innerHTML = `
+    <div class="product-detail-container">
+      <div class="product-detail-image">
+        <img src="${p.img}" alt="${p.name}" onerror="this.src='images/placeholder.jpg'">
+      </div>
+      <div class="product-detail-info">
+        <h2 class="product-detail-title">${p.name}</h2>
+        <div class="product-detail-price" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;">
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span class="current-price" style="font-size:1.8rem;font-weight:700;color:#2d3748;">Rp ${p.price.toLocaleString('id-ID')}</span>
+            ${p.oldprice ? `<span class="old-price" style="color:#a0aec0;text-decoration:line-through;font-size:1.2rem;">Rp ${p.oldprice.toLocaleString('id-ID')}</span>` : ''}
+          </div>
+          ${p.discount ? `<span class="discount-badge" style="background:#ff8c00;color:#fff;padding:0.4rem 1rem;border-radius:0px;font-size:0.9rem;font-weight:700;display:inline-block;width:fit-content;">${p.discount} OFF</span>` : ''}
+          <button class="reviews-btn" onclick="showReviewsModal(${idx})" style="background:#f7fafc;color:#2d3748;border:1px solid #e2e8f0;padding:0.4rem 1rem;border-radius:0px;font-size:0.9rem;font-weight:600;cursor:pointer;margin-left:0.5rem;transition:all 0.2s;">
+            <i class="fas fa-star" style="color:#ffd700;margin-right:0.3rem;"></i>
+            Ulasan (${(() => {
+              const reviews = [12, 28, 45, 67, 89, 23, 34, 56, 78, 91, 15, 42, 63, 87, 19];
+              return reviews[Math.floor(Math.random() * reviews.length)];
+            })()})
+          </button>
+        </div>
+        <div class="product-detail-description">
+          <h3>Description</h3>
+          <p>${p.desc}</p>
+        </div>
+        <div class="product-detail-specs">
+          <h3>Specifications</h3>
+          <div class="specs-content">${p.detail ? p.detail.replace(/\n/g, '<br>') : 'No specifications available.'}</div>
+        </div>
+        
+
+        
+        <div class="product-detail-actions">
+          <button class="btn-add-cart" onclick="addToCartFromModal(${idx})">
+            <i class="fas fa-shopping-cart"></i>
+            Add to Cart
+          </button>
+          <button class="btn-add-favorite" onclick="addToFavoriteFromModal(${idx})" style="color: ${heartColor};">
+            <i class="${heartIcon}" style="color: ${heartColor};"></i>
+            ${heartText}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  modal.style.display = 'flex';
+}
+
+function addToCartFromModal(idx) {
+  addToCartShop(idx);
+  showShopToast('Product successfully added to cart!');
+}
+
+function addToFavoriteFromModal(idx) {
+  const prod = allProducts[idx];
+  const fav = JSON.parse(localStorage.getItem('favorite') || '[]');
+  
+  // Check if product already in favorites
+  const existingIndex = fav.findIndex(item => item.title === prod.name);
+  
+  if (existingIndex === -1) {
+    // Add to favorites
+    fav.push({
+      title: prod.name,
+      price: 'Rp ' + prod.price.toLocaleString('id-ID'),
+      img: prod.img
+    });
+    localStorage.setItem('favorite', JSON.stringify(fav));
+    showShopToast('Product added to favorites!');
+  } else {
+    // Remove from favorites
+    fav.splice(existingIndex, 1);
+    localStorage.setItem('favorite', JSON.stringify(fav));
+    showShopToast('Product removed from favorites!');
+  }
+  
+  // Update the modal button
+  const modalBtn = document.querySelector('.btn-add-favorite i');
+  if (modalBtn) {
+    const isFavorite = fav.some(item => item.title === prod.name);
+    modalBtn.className = isFavorite ? 'fas fa-heart' : 'far fa-heart';
+    modalBtn.style.color = isFavorite ? '#ff8c00' : '#e53e3e';
+  }
+}
+
+function showReviewsModal(idx) {
+  const p = allProducts[idx];
+  const modal = document.getElementById('reviews-modal');
+  const body = document.getElementById('reviews-modal-body');
+  
+  const ratings = [4.2, 4.5, 4.7, 4.8, 4.9, 4.3, 4.6, 4.4, 4.1, 4.0];
+  const reviews = [12, 28, 45, 67, 89, 23, 34, 56, 78, 91, 15, 42, 63, 87, 19];
+  const randomRating = ratings[Math.floor(Math.random() * ratings.length)];
+  const randomReviews = reviews[Math.floor(Math.random() * reviews.length)];
+  
+  body.innerHTML = `
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h2 style="font-size: 1.5rem; font-weight: 700; color: #2d3748; margin-bottom: 1rem; text-align: center;">Ulasan ${p.name}</h2>
+      
+      <!-- Rating Summary -->
+      <div style="background: #f7fafc; padding: 1.5rem; border-radius: 0px; margin-bottom: 2rem; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.2rem;">
+            <i class="fas fa-star" style="color: #ffd700; font-size: 1.2rem;"></i>
+            <i class="fas fa-star" style="color: #ffd700; font-size: 1.2rem;"></i>
+            <i class="fas fa-star" style="color: #ffd700; font-size: 1.2rem;"></i>
+            <i class="fas fa-star" style="color: #ffd700; font-size: 1.2rem;"></i>
+            <i class="fas fa-star" style="color: #ffd700; font-size: 1.2rem;"></i>
+          </div>
+          <span style="font-weight: 600; color: #2d3748; font-size: 1.1rem;">${randomRating}</span>
+          <span style="color: #718096;">|</span>
+          <span style="color: #718096;">${randomReviews} ulasan</span>
+        </div>
+      </div>
+      
+      <!-- Reviews List -->
+      <div style="max-height: 400px; overflow-y: auto;">
+        ${(() => {
+          const sampleReviews = [
+            { name: "Budi S.", rating: 5, comment: "Produk berkualitas tinggi, pengiriman cepat dan aman. Sangat puas dengan pembelian ini!", date: "2 hari yang lalu" },
+            { name: "Sari M.", rating: 4, comment: "Desainnya bagus dan sesuai dengan yang diharapkan. Harga juga terjangkau.", date: "1 minggu yang lalu" },
+            { name: "Ahmad R.", rating: 5, comment: "Kualitas produk sangat baik, material terasa premium. Recommended!", date: "3 hari yang lalu" },
+            { name: "Dewi K.", rating: 4, comment: "Pengiriman tepat waktu, produk sesuai deskripsi. Pelayanan customer service sangat ramah.", date: "5 hari yang lalu" },
+            { name: "Rudi P.", rating: 5, comment: "Barang sampai dalam kondisi baik, packaging rapi. Terima kasih SenadaHome!", date: "1 hari yang lalu" },
+            { name: "Linda W.", rating: 5, comment: "Produk sesuai ekspektasi, kualitas sangat baik. Akan beli lagi di sini.", date: "4 hari yang lalu" },
+            { name: "Bambang K.", rating: 4, comment: "Harga terjangkau untuk kualitas yang diberikan. Pengiriman juga cepat.", date: "1 minggu yang lalu" },
+            { name: "Nina S.", rating: 5, comment: "Sangat puas dengan pembelian ini. Produk berkualitas dan pelayanan ramah.", date: "2 minggu yang lalu" }
+          ];
+          
+          return sampleReviews.map(review => `
+            <div style="border-bottom: 1px solid #e2e8f0; padding: 1rem 0;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.1rem;">
+                  ${Array(review.rating).fill().map(() => '<i class="fas fa-star" style="color: #ffd700; font-size: 0.9rem;"></i>').join('')}
+                  ${Array(5 - review.rating).fill().map(() => '<i class="far fa-star" style="color: #cbd5e0; font-size: 0.9rem;"></i>').join('')}
+                </div>
+                <span style="font-weight: 600; color: #2d3748; font-size: 0.9rem;">${review.name}</span>
+                <span style="color: #718096; font-size: 0.8rem;">${review.date}</span>
+              </div>
+              <p style="color: #4a5568; font-size: 0.9rem; margin: 0; line-height: 1.4;">${review.comment}</p>
+            </div>
+          `).join('');
+        })()}
+      </div>
+    </div>
+  `;
+  
+  modal.style.display = 'flex';
+}
+
+function closeProductModal() {
+  document.getElementById('product-modal').style.display = 'none';
+}
+
+function closeReviewsModal() {
+  document.getElementById('reviews-modal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+  const modal = document.getElementById('product-modal');
+  const reviewsModal = document.getElementById('reviews-modal');
+  if (event.target === modal) closeProductModal();
+  if (event.target === reviewsModal) closeReviewsModal();
+}
+  </script>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-main">
+      <div class="footer-col">
+        <h3 class="footer-title">SenadaHome</h3>
+        <p style="color: #a0aec0; margin-bottom: 1rem;">Toko furniture terpercaya dengan kualitas terbaik dan harga terjangkau untuk melengkapi hunian impian Anda.</p>
+        <div class="social-media">
+          <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+      
+                  <div class="footer-col">
+                <h3 class="footer-title">Quick Links</h3>
+                <a href="index.html" class="footer-link">Home</a>
+                <a href="shop.html" class="footer-link">Shop</a>
+                <a href="about.html" class="footer-link">About Us</a>
+                <a href="contact.html" class="footer-link">Contact</a>
+                <a href="blog.html" class="footer-link">Blog</a>
+            </div>
+            
+            <div class="footer-col">
+                <h3 class="footer-title">Categories</h3>
+                <a href="#" class="footer-link categories-link">Living Room</a>
+                <a href="#" class="footer-link categories-link">Dining Room</a>
+                <a href="#" class="footer-link categories-link">Bedroom</a>
+                <a href="#" class="footer-link categories-link">Office</a>
+                <a href="#" class="footer-link categories-link">Outdoor</a>
+            </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Contact Info</h3>
+        <div class="contact-info">
+                              <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Sebrang, Fakfak Papua Barat</span>
+                    </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>+62 812-3456-7890</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>info@senadahome.com</span>
+          </div>
+          <div class="contact-item">
+            <i class="fab fa-whatsapp"></i>
+            <span>+62 812-3456-7890</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-clock"></i>
+            <span>Senin - Sabtu: 08:00 - 21:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer Bottom Sections -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 0; border-top: 1px solid #4a5568;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        
+        <!-- Metode Pembayaran -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Metode Pembayaran</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem;">
+            <img src="images/visa-logo.jpg" alt="Visa" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/mastercard-logo.jpg" alt="Mastercard" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/jcb-logo.png" alt="JCB" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/mandiri-logo.jpg" alt="Mandiri" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bca-logo.jpg" alt="BCA" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bni-logo.jpg" alt="BNI" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/bri-logo.jpg" alt="BRI" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/ovo-logo.jpg" alt="OVO" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/dana-logo.jpg" alt="DANA" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/gopay-logo.jpg" alt="GoPay" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/shopeepay-logo.jpg" alt="ShopeePay" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+            <img src="images/cod.jpg" alt="COD" style="width: 60px; height: 35px; object-fit: contain; background: #fff; padding: 5px; border-radius: 4px;">
+          </div>
+        </div>
+        
+        <!-- Jasa Pengiriman -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Jasa Pengiriman</h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/jne-logo.jpg" alt="JNE" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/jnt-logo.jpg" alt="J&T Express" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/ninja-logo.jpg" alt="Ninja Express" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/gojek-logo.jpg" alt="GoSend" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/grab-logo.jpg" alt="GrabExpress" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+            <div style="background: #fff; padding: 0.8rem; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+              <img src="images/lion-logo.jpg" alt="Lion Parcel" style="width: 50px; height: 30px; object-fit: contain;">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Download App -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Download Aplikasi SenadaHome</h3>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="#" style="display: inline-block; background: #000; padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+              <img src="images/apple.jpg" alt="Apple App Store" style="width: 40px; height: 30px; object-fit: contain;">
+              <div style="color: #fff;">
+                <div style="font-size: 0.7rem; line-height: 1;">Download on the</div>
+                <div style="font-size: 1rem; font-weight: 700; line-height: 1;">App Store</div>
+              </div>
+            </a>
+            <a href="#" style="display: inline-block; background: #000; padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+              <img src="images/store.jpg" alt="Google Play Store" style="width: 40px; height: 40px; object-fit: contain;">
+              <div style="color: #fff;">
+                <div style="font-size: 0.7rem; line-height: 1;">GET IT ON</div>
+                <div style="font-size: 1rem; font-weight: 700; line-height: 1;">Google Play</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <div style="max-width: 1200px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #4a5568;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <p style="color: #a0aec0; margin: 0;">© 2025 SenadaHome. Website E-commerce</p>
+        <p style="color: #a0aec0; margin: 0;">Desain By Yolanda Lia Sri Rahayu</p>
+        <div style="display: flex; gap: 2rem;">
+          <a href="#" style="color: #a0aec0; text-decoration: none;">Privacy Policy</a>
+          <a href="#" style="color: #a0aec0; text-decoration: none;">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- Widget WhatsApp Chat -->
+  <a href="https://wa.me/6281234567890" class="wa-chat" target="_blank" style="position:fixed;bottom:24px;right:24px;z-index:9999;background:#25d366;color:#fff;padding:0.7rem 1.2rem;border-radius:2rem;display:flex;align-items:center;gap:0.5rem;font-weight:600;box-shadow:0 2px 8px rgba(45,55,72,0.13);text-decoration:none;"><i class="fab fa-whatsapp"></i> Chat via WhatsApp</a>
+  
+  <div id="product-modal" class="product-modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeProductModal()">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+  
+  <div id="reviews-modal" class="product-modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeReviewsModal()">&times;</span>
+      <div id="reviews-modal-body"></div>
+    </div>
+  </div>
+  <script src="header-script.js"></script>
+  <script src="products.js"></script>
+  <script src="shop.js"></script>
+</body>
+</html>

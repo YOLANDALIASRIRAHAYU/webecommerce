@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keranjang Saya - SenadaHome</title>
+  <link rel="stylesheet" href="home-style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="header-style.css"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <style>
+    body { background: #faf8f5; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #2d3748; }
+    .cart-header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; box-shadow: 0 2px 16px 0 rgba(45,55,72,0.08); padding: 1.1rem 1.2rem 1.1rem 0.7rem;
+      border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10;
+    }
+    .cart-header-left { display: flex; align-items: center; gap: 1rem; }
+    .cart-back { background: none; border: none; color: #4a5568; font-size: 1.3rem; cursor: pointer; margin-right: 0.2rem; }
+    .cart-title { font-size: 1.25rem; font-weight: 700; color: #2d3748; }
+    .cart-count { color: #4a5568; font-size: 1.05rem; margin-left: 0.5rem; }
+    .cart-edit { color: #4a5568; font-size: 1.05rem; background: none; border: none; cursor: pointer; }
+    .cart-shop-group { background: #fff; border-radius: 0px; margin: 1.2rem 0; box-shadow: 0 4px 24px rgba(45,55,72,0.08); padding: 1.2rem 1rem; }
+    .cart-shop-title { font-weight: 700; color: #2d3748; margin-bottom: 0.7rem; font-size: 1.08rem; }
+    .cart-item { display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #e2e8f0; padding: 1.1rem 0; position: relative; }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-checkbox { accent-color: #ff8c00; width: 1.1rem; height: 1.1rem; }
+    .cart-img { width: 64px; height: 64px; border-radius: 0px; object-fit: cover; background: #f7fafc; }
+    .cart-info { flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }
+    .cart-name { font-weight: 600; color: #2d3748; font-size: 1.05rem; }
+    .cart-varian { font-size: 0.97rem; color: #4a5568; background: #f7fafc; border: none; border-radius: 0px; padding: 0.1rem 0.7rem; margin-top: 0.1rem; }
+    .cart-price-row { display: flex; align-items: center; gap: 0.7rem; }
+    .cart-price { color: #2d3748; font-weight: 700; font-size: 1.08rem; }
+    .cart-oldprice { color: #a0aec0; text-decoration: line-through; font-size: 0.98rem; }
+    .cart-qty-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; }
+    .cart-qty-btn { background: #f7fafc; border: none; color: #4a5568; font-size: 1.1rem; border-radius: 0px; width: 28px; height: 28px; cursor: pointer; transition: background 0.18s; }
+    .cart-qty-btn:hover { background: #ff8c00; color: #fff; }
+    .cart-qty-val { min-width: 1.5rem; text-align: center; color: #4a5568; font-weight: 600; }
+    .cart-promo { background: #fff; border-radius: 0px; margin: 1.2rem 0; box-shadow: 0 4px 24px rgba(45,55,72,0.08); padding: 1.1rem 1rem; color: #4a5568; font-size: 1.01rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .cart-footer {
+      position: fixed; left: 0; right: 0; bottom: 0; background: #fff; box-shadow: 0 -2px 16px rgba(45,55,72,0.08);
+      display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.2rem; z-index: 20;
+      border-top: 1px solid #e2e8f0;
+    }
+    .cart-footer-left { display: flex; align-items: center; gap: 0.7rem; }
+    .cart-footer-checkbox { accent-color: #ff8c00; width: 1.1rem; height: 1.1rem; }
+    .cart-footer-total { color: #2d3748; font-size: 1.15rem; font-weight: 700; }
+    .cart-footer-btn { background: #ff8c00; color: #fff; border: none; border-radius: 0px; font-size: 1.1rem; font-weight: 700; padding: 0.7rem 2.2rem; cursor: pointer; box-shadow: 0 4px 12px rgba(255,140,0,0.20); transition: background 0.2s, transform 0.18s; }
+    .cart-footer-btn:disabled { background: #a0aec0; color: #fff; cursor: not-allowed; }
+    .cart-footer-btn:hover:not(:disabled) { background: #e67e00; transform: scale(1.04); }
+    @media (max-width: 700px) {
+      .cart-header, .cart-footer { padding: 0.7rem 0.5rem; font-size: 0.97rem; }
+      .cart-shop-group, .cart-promo { padding: 0.7rem 0.5rem; }
+      .cart-img { width: 44px; height: 44px; }
+      .cart-footer-btn { padding: 0.5rem 1.1rem; font-size: 1rem; }
+    }
+</style>
+<div class="cart-header" style="display:flex;align-items:center;justify-content:space-between;">
+  <div class="cart-header-left" style="display:flex;align-items:center;gap:1rem;">
+    <button class="cart-back" onclick="window.location.href='index.html'" aria-label="Kembali"><i class="fa fa-arrow-left"></i></button>
+    <span class="cart-title" style="font-size:1.25rem;font-weight:700;color:#2d3748;">Keranjang Saya</span>
+  </div>
+  <span class="cart-count" id="cart-count" style="font-size:1.05rem;color:#4a5568;">0</span>
+  <button class="cart-edit" style="display:none;">Edit</button>
+</div>
+  <div class="cart-shop-group">
+    <div class="cart-shop-title">SenadaHome Official Shop</div>
+    <div id="cart-list"></div>
+  </div>
+  <div class="cart-promo">
+    <div><i class="fa fa-ticket-alt"></i> Tersedia Voucher Cashback s/d 50%</div>
+    <div><i class="fa fa-truck"></i> Gratis Ongkir s/d Rp30.000 dengan min. belanja Rp0</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-footer-left">
+      <input type="checkbox" id="cart-selectall" class="cart-footer-checkbox" />
+      <label for="cart-selectall">Semua</label>
+    </div>
+    <div class="cart-footer-total" id="cart-total">Rp0</div>
+    <button class="cart-footer-btn" id="cart-checkout" disabled>Checkout (0)</button>
+  </div>
+  <script>
+    // Ambil data keranjang dari localStorage
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    // Dummy varian
+    const variants = ['Natural', 'Putih', 'Coklat', 'Hitam', 'Krem', 'Silver', 'Gold', 'Biru', 'Merah Jambu'];
+    // Render cart
+    function renderCart() {
+      const list = document.getElementById('cart-list');
+      const count = document.getElementById('cart-count');
+      if(cart.length === 0) {
+        list.innerHTML = '<div style="text-align:center;color:#947459;">Keranjang kosong.</div>';
+        count.textContent = '(0)';
+        document.getElementById('cart-total').textContent = 'Rp0';
+        document.getElementById('cart-checkout').disabled = true;
+        document.getElementById('cart-checkout').textContent = 'Checkout (0)';
+        return;
+      }
+      let total = 0, selected = 0;
+      list.innerHTML = '';
+      cart.forEach((item, i) => {
+        if(!item.qty) item.qty = 1;
+        if(!item.variant) item.variant = variants[i%variants.length];
+        const priceNum = parseInt(item.price.replace(/\D/g, ''));
+        const sub = priceNum * item.qty;
+        const checked = item.selected ? 'checked' : '';
+        if(item.selected) { total += sub; selected++; }
+        list.innerHTML += `<div class="cart-item">
+          <input type="checkbox" class="cart-checkbox" data-idx="${i}" ${checked} />
+          <img src="${item.img}" class="cart-img" alt="${item.title}" />
+          <div class="cart-info">
+            <div class="cart-name">${item.title}</div>
+            <select class="cart-varian">${variants.map(v=>`<option${v===item.variant?' selected':''}>${v}</option>`).join('')}</select>
+            <div class="cart-price-row">
+              <span class="cart-price">${item.price}</span>
+              ${item.oldPrice?`<span class="cart-oldprice">${item.oldPrice}</span>`:''}
+            </div>
+            <div class="cart-qty-row">
+              <button class="cart-qty-btn" data-qty="-1" data-idx="${i}">-</button>
+              <span class="cart-qty-val">${item.qty}</span>
+              <button class="cart-qty-btn" data-qty="1" data-idx="${i}">+</button>
+            </div>
+          </div>
+          <div class="cart-item-sub">Rp ${sub.toLocaleString('id-ID')}</div>
+          <button class="cart-item-delete" data-idx="${i}" title="Hapus" style="background:none;border:none;color:#b88b4a;font-size:1.2rem;cursor:pointer;position:absolute;top:10px;right:10px;"><i class='fa fa-trash'></i></button>
+        </div>`;
+      });
+      count.textContent = `(${cart.length})`;
+      document.getElementById('cart-total').textContent = 'Rp ' + total.toLocaleString('id-ID');
+      document.getElementById('cart-checkout').disabled = selected === 0;
+      document.getElementById('cart-checkout').textContent = `Checkout (${selected})`;
+      document.getElementById('cart-selectall').checked = selected === cart.length && cart.length > 0;
+    }
+    // Event: select, qty, varian
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCart();
+      document.getElementById('cart-list').onclick = function(e) {
+        if(e.target.classList.contains('cart-checkbox')) {
+          const idx = +e.target.dataset.idx;
+          cart[idx].selected = e.target.checked;
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+        }
+        if(e.target.classList.contains('cart-qty-btn')) {
+          const idx = +e.target.dataset.idx;
+          let val = cart[idx].qty + (+e.target.dataset.qty);
+          if(val < 1) val = 1;
+          cart[idx].qty = val;
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+        }
+        if(e.target.classList.contains('cart-varian')) {
+          const idx = e.target.closest('.cart-item').querySelector('.cart-checkbox').dataset.idx;
+          cart[idx].variant = e.target.value;
+          localStorage.setItem('cart', JSON.stringify(cart));
+        }
+        // Hapus produk
+        if(e.target.classList.contains('cart-item-delete') || (e.target.closest && e.target.closest('.cart-item-delete'))) {
+          const btn = e.target.classList.contains('cart-item-delete') ? e.target : e.target.closest('.cart-item-delete');
+          const idx = +btn.dataset.idx;
+          cart.splice(idx, 1);
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+        }
+      };
+      document.getElementById('cart-selectall').onchange = function(e) {
+        cart.forEach(item => item.selected = e.target.checked);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+      };
+      document.getElementById('cart-checkout').onclick = function() {
+        window.location.href = 'payment.html';
+      };
+    });
+    // Tambahkan update cart count di checkout
+    function getCart() {
+      return JSON.parse(localStorage.getItem('cart') || '[]');
+    }
+    function updateCartCount() {
+      const cart = getCart();
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCart();
+      updateCartCount();
+    });
+  </script>
+</body>
+</html> 
